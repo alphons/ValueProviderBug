@@ -12,9 +12,9 @@ namespace TestWeb
 		}
 		public ValueProviderResult GetValue(string key)
 		{
-			return new ValueProviderResult(new string[] { "a", "", "b", null, "c" }); // "" turns into null ?
-			//return new ValueProviderResult(new string[] { "a", "b", null, "c" }); // null is repeated as "b"
-			//return new ValueProviderResult(new string[] { null, "a", "b", null, "c" }); // first null is skipped
+			return new ValueProviderResult(new string[] { "a", "", "b", null, "c" }); // "a", null, "b", "b", "c"
+			//return new ValueProviderResult(new string[] { "a", "b", null, "c" }); // "a", "b", "b", "c" => null, repeats "b"
+			//return new ValueProviderResult(new string[] { null, "a", "b", null, "c" }); // "a", "b", "b", "c" first null skipped
 		}
 	}
 
