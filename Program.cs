@@ -14,11 +14,18 @@ builder.Services.AddMvcCore().AddMvcOptions(options =>
 	options.ModelMetadataDetailsProviders.Clear();
 	options.ModelValidatorProviders.Clear();
 	options.ModelMetadataDetailsProviders.Clear();
-	options.ModelBinderProviders.Clear();
+	//options.ModelBinderProviders.Clear();
 
-	options.ModelBinderProviders.Add(new CollectionModelBinderProvider());
-	options.ModelBinderProviders.Add(new SimpleTypeModelBinderProvider());
+	options.ModelBinderProviders.Add(new TestWeb.SimpleTypeNoNullModelBinderProvider()); // "" -> ""
+	options.ModelBinderProviders.Add(new CollectionModelBinderProvider()); // Problems having null values
+
+	
+	//options.ModelBinderProviders.Add(new SimpleTypeModelBinderProvider()); // "" -> null
+
+	//options.ModelBinderProviders.Add(new TestWeb.MyCollectionModelBinderProvider());
+
 	options.ValueProviderFactories.Add(new TestWeb.SomeValueProviderFactory());
+
 });
 
 var app = builder.Build();

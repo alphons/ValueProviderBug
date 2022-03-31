@@ -9,7 +9,7 @@ namespace TestWeb
 	{
 		[HttpGet]
 		[Route("~/")]
-		public async Task<IActionResult> Index(List<string?> list)
+		public async Task<IActionResult> Index(List<string> list)
 		{
 			await Task.Yield();
 
