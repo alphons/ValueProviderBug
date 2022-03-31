@@ -1,28 +1,7 @@
 
-using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var RemoveModelBinderProviders = new string[] {
-		"BinderTypeModelBinderProvider",
-		"ServicesModelBinderProvider",
-		"BodyModelBinderProvider",
-		"HeaderModelBinderProvider",
-		"FloatingPointTypeModelBinderProvider",
-		"EnumTypeModelBinderProvider",
-		"DateTimeModelBinderProvider",
-		"CancellationTokenModelBinderProvider",
-		"ByteArrayModelBinderProvider",
-		"FormFileModelBinderProvider",
-		"FormCollectionModelBinderProvider",
-		"KeyValuePairModelBinderProvider",
-		"DictionaryModelBinderProvider",
-		"ComplexObjectModelBinderProvider",
-		"ArrayModelBinderProvider",
-
-		// "CollectionModelBinderProvider", // Dont remove for this test
-		// "SimpleTypeModelBinderProvider", // Dont remove for this test
-	};
 
 builder.Services.AddMvcCore().AddMvcOptions(options =>
 {
@@ -34,18 +13,11 @@ builder.Services.AddMvcCore().AddMvcOptions(options =>
 	options.Filters.Clear();
 	options.ModelMetadataDetailsProviders.Clear();
 	options.ModelValidatorProviders.Clear();
+	options.ModelMetadataDetailsProviders.Clear();
+	options.ModelBinderProviders.Clear();
 
-	// Removing binderproviders not used in this test
-	foreach (var binder in options.ModelBinderProviders.ToArray())
-	{
-		var name = binder.GetType().Name;
-		if (RemoveModelBinderProviders.Contains(name))
-		{
-			Debug.WriteLine($"Removing \"{name}\"");
-			options.ModelBinderProviders.Remove(binder);
-		}
-	}
-
+	options.ModelBinderProviders.Add(new CollectionModelBinderProvider());
+	options.ModelBinderProviders.Add(new SimpleTypeModelBinderProvider());
 	options.ValueProviderFactories.Add(new TestWeb.SomeValueProviderFactory());
 });
 
