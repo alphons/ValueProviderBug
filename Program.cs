@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var ModelBinderProviders = new string[] {
+var RemoveModelBinderProviders = new string[] {
 		"BinderTypeModelBinderProvider",
 		"ServicesModelBinderProvider",
 		"BodyModelBinderProvider",
@@ -39,7 +39,7 @@ builder.Services.AddMvcCore().AddMvcOptions(options =>
 	foreach (var binder in options.ModelBinderProviders.ToArray())
 	{
 		var name = binder.GetType().Name;
-		if (ModelBinderProviders.Contains(name))
+		if (RemoveModelBinderProviders.Contains(name))
 		{
 			Debug.WriteLine($"Removing \"{name}\"");
 			options.ModelBinderProviders.Remove(binder);
