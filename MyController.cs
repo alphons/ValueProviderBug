@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 #nullable enable
 
-namespace TestWeb
+namespace ValueProviderBug
 {
 	public class MyController : ControllerBase
 	{
