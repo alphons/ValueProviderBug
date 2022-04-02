@@ -1,0 +1,159 @@
+﻿
+using Microsoft.AspNetCore.Mvc;
+
+namespace CoreBasic.Web.LogicControllers
+{
+	public class ComplexController : ControllerBase
+	{
+		[HttpPost]
+		[Route("~/api/ComplexString")]
+		public async Task<IActionResult> ComplexString(string Name)
+		{
+			await Task.Yield();
+
+			return Ok(new
+			{
+				Name
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexDouble")]
+		public async Task<IActionResult> ComplexDouble(double? F)
+		{
+			await Task.Yield();
+
+			return Ok(new
+			{
+				F
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexStringInt")]
+		public async Task<IActionResult> ComplexStringInt(string Name, int A)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexList")]
+		public async Task<IActionResult> ComplexList(List<string> list)
+		{
+			await Task.Yield();
+
+			return Ok(new
+			{
+				list
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexListInt")]
+		public async Task<IActionResult> ComplexListInt(List<int> list)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexListNullableDouble")]
+		public async Task<IActionResult> ComplexListNullableDouble(List<double?> list)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+
+		[HttpPost]
+		[Route("~/api/ComplexListObjecs")]
+		public async Task<IActionResult> ComplexListObjecs(List<string> list)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexStringList")]
+		public async Task<IActionResult> ComplexStringList(string Name, List<string> list)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+		public class ObjectB
+		{
+			public List<ObjectA> List { get; set; }
+
+			public string Name { get;set;}
+		}
+
+		public class ObjectA
+		{
+			public string a { get; set; }
+			public string b { get; set; }
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexArray")]
+		public async Task<IActionResult> ComplexArray(ObjectA[] list)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexObjectArray")]
+		public async Task<IActionResult> ComplexObjectArray(ObjectB objB)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+		public class ObjectC
+		{
+			public string Name { get; set; }
+			public List<List<string>> Users { get; set; }
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexArrayArray")]
+		public async Task<IActionResult> ComplexArrayArray(string Group, ObjectC List)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+		public class Usert
+		{
+			public string Name { get; set; }
+
+			public List<string> Alias { get; set; }
+		}
+
+		public class ObjectD
+		{
+			public string Name { get; set; }
+			public List<List<Usert>> Users { get; set; }
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexArrayArrayClass")]
+		public async Task<IActionResult> ComplexArrayArrayClass(bool Testing, bool Relaxed, string Group, ObjectD GroupInfo)
+		{
+			await Task.Yield();
+
+			return Ok();
+		}
+
+	}
+}

@@ -5,24 +5,48 @@
 
 function PageEvents()
 {
+	document.addEventListener("click", function (e)
+	{
+		if (typeof window[e.target.id] === "function")
+			window[e.target.id].call(e, e);
+	});
+
 	$id("Complex").on("click", function (e)
 	{
 		DoComplex();
 	});
 }
 
+function ComplexDouble()
+{
+	netproxy("./api/ComplexDouble", { F: 123.456 }, function ()
+	{
+		if (this.F != 123.456)
+			alert('ComplexDouble error');
+	});
+}
+
+function ComplexString()
+{
+	netproxy("./api/ComplexString", { Name: 'This is a test' });
+}
+
+function ComplexList()
+{
+	netproxy("./api/ComplexList", { list: ['a', '', 'b', null, 'c'] }, function ()
+	{
+
+	});
+}
+
+
 function DoComplex()
 {
-	var a = { Name: 'abc def', list: ['a', 'b', 'c'] };
-
-	var b = JSON.stringify(a);
-
 
 	//netproxy("./api/ComplexDouble", { F: null });
 	//netproxy("./api/ComplexDouble", { F: 123.456 });
 	//netproxy("./api/ComplexString", { Name: null });
-	netproxy("./api/ComplexString", { Name: 12.34 });
-	//netproxy("./api/ComplexString", { Name: '' });
+	//netproxy("./api/ComplexString", { Name: 12.34 });
 	//netproxy("./api/ComplexString", { Name: 'abc def' });
 	//netproxy("./api/ComplexStringInt", { Name: 'abc def', A : 123 });
 	//netproxy("./api/ComplexList", { list: [ "a", "b" , "", null, "d"] });
