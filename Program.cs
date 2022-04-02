@@ -1,7 +1,13 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
-var builder = WebApplication.CreateBuilder(args);
+
+
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+	ContentRootPath = AppDomain.CurrentDomain.BaseDirectory
+});
+var services = builder.Services;
 
 builder.Services.AddMvcCore().AddMvcOptions(options =>
 {
@@ -28,5 +34,8 @@ var app = builder.Build();
 app.UseRouting();
 
 app.MapControllers();
+
+app.UseDefaultFiles();
+
 
 app.Run();
