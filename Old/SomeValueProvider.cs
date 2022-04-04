@@ -20,14 +20,14 @@ namespace TestWeb
 				if (prefix == "list[0].a" || prefix == "list[0].b")
 					return true;
 				if (prefix == "list[1].a" || prefix == "list[1].b")
-					return false;
+					return false; // null
 				if (prefix == "list[2].a" || prefix == "list[2].b")
 					return true;
 				return false;
 			}
-			// emulate  { ListOfStrings: ['a', '', 'b', null, 'c'] }
-			// emulate  { ListOfInts: [ 0, 1 , 2, null , 4] }
-			// emulate  { list: [{ a: 'a', b: null }, null, { a: 'c', b: 'd' }] });
+			// emulate  { ListOfStrings: ['a', '', 'b', null, 'c'] } => "a", null, "b", "b", "c" (repeat bug)
+			// emulate  { ListOfInts: [ 0, 1 , 2, null , 4] } =>   null, 1, 2, 2, 4 (repeat bug)
+			// emulate  { list: [{ a: 'a', b: null }, null, { a: 'c', b: 'd' }] }); => list: [{ a: 'a', b: null } ] , null value is end array
 			public ValueProviderResult GetValue(string key)
 			{
 				if(key == "ListOfStrings")

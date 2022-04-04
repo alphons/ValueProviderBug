@@ -14,15 +14,16 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 public interface IModelProvider
 {
 	object? GetModel(string key, Type t);
+	bool ContainsPrefix(string prefix);
 }
 
 
-public class JsonValueProvider : IValueProvider, IModelProvider
+public class JsonModelProvider : IModelProvider, IValueProvider // IValueProvider for compatibility reasons
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 	private readonly JsonDocument? doc;
 
-	public JsonValueProvider(JsonDocument? doc, JsonSerializerOptions? options)
+	public JsonModelProvider(JsonDocument? doc, JsonSerializerOptions? options)
 	{
 		this.jsonSerializerOptions = options;
 
@@ -85,7 +86,7 @@ public class JsonValueProvider : IValueProvider, IModelProvider
 	}
 }
 
-public class JsonValueProviderFactory : IValueProviderFactory
+public class JsonModelProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
@@ -95,7 +96,7 @@ public class JsonValueProviderFactory : IValueProviderFactory
 		{
 			var jsonDocument = await JsonDocument.ParseAsync(context.ActionContext.HttpContext.Request.Body);
 
-			context.ValueProviders.Add(new JsonValueProvider(jsonDocument, options));
+			context.ValueProviders.Add(new JsonModelProvider(jsonDocument, options));
 		}
 		catch (Exception eee)
 		{
@@ -121,12 +122,12 @@ public class JsonValueProviderFactory : IValueProviderFactory
 		}
 		return Task.CompletedTask;
 	}
-	public JsonValueProviderFactory(JsonSerializerOptions Options) : base()
+	public JsonModelProviderFactory(JsonSerializerOptions Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
 
-	public JsonValueProviderFactory()
+	public JsonModelProviderFactory()
 	{
 		this.jsonSerializerOptions = null;
 	}

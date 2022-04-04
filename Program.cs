@@ -8,24 +8,13 @@ var builder = WebApplication.CreateBuilder();
 
 var services = builder.Services;
 
-//var staticFileProvider = new StaticFileProvider(builder.Environment.WebRootPath);
-
 builder.Services.AddMvcCore().AddMvcOptions(options =>
 {
-	// ArrayModelBinderProvider 
-	// CollectionModelBinderProvider 
-	// ComplexObjectModelBinderProvider 
-
-	//options.ModelBinderProviders.Insert(0, new JsonModelBinderProvider());
-	//options.ValueProviderFactories.Add(new JsonValueProviderFactory(new JsonSerializerOptions()
-	//{
-	//	NumberHandling = JsonNumberHandling.AllowReadingFromString
-	//}));
-
-	options.ValueProviderFactories.Add(new TestWeb.SomeValueProviderFactory());
-
-	//options.ValueProviderFactories.Add(new JsonParametersValueProviderFactory());
-
+	options.ModelBinderProviders.Insert(0, new JsonModelBinderProvider());
+	options.ValueProviderFactories.Add(new JsonModelProviderFactory(new JsonSerializerOptions()
+	{
+		NumberHandling = JsonNumberHandling.AllowReadingFromString
+	}));
 }).AddJsonOptions(options =>
 {
 	options.JsonSerializerOptions.DictionaryKeyPolicy = null;

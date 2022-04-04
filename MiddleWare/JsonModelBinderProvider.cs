@@ -36,12 +36,12 @@ public class JsonModelBinder : IModelBinder
 		if (compositeValueProvider == null)
 			throw new ArgumentNullException(nameof(compositeValueProvider));
 
-		if (compositeValueProvider.FirstOrDefault(x => x.GetType() == typeof(JsonValueProvider)) is not JsonValueProvider jsonValueProvider)
-			throw new ArgumentNullException(nameof(jsonValueProvider));
+		if (compositeValueProvider.FirstOrDefault(x => x.GetType() == typeof(JsonModelProvider)) is not JsonModelProvider modelProvider)
+			throw new ArgumentNullException(nameof(modelProvider));
 
 		try
 		{
-			var model = jsonValueProvider.GetModel(bindingContext.ModelName, this.type);
+			var model = modelProvider.GetModel(bindingContext.ModelName, this.type);
 
 			bindingContext.Result = ModelBindingResult.Success(model);
 
