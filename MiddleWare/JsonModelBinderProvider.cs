@@ -1,12 +1,13 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// JsonModelBinder
+// (C) 2022 Alphons van der Heijden
+// Date: 2022-04-04
+// Version: 1.0
 
 #nullable enable
 
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Runtime.ExceptionServices;
 
-namespace ValueProviderBug;
+namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 
 /// <summary>
 /// An <see cref="IModelBinder"/> for simple types.
@@ -40,9 +41,9 @@ public class JsonModelBinder : IModelBinder
 
 		try
 		{
-			var objectValue = jsonValueProvider.GetObject(bindingContext.ModelName, this.type);
+			var model = jsonValueProvider.GetModel(bindingContext.ModelName, this.type);
 
-			bindingContext.Result = ModelBindingResult.Success(objectValue);
+			bindingContext.Result = ModelBindingResult.Success(model);
 
 			return Task.CompletedTask;
 		}

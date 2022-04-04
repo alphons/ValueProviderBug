@@ -1,7 +1,8 @@
 
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-
-using ValueProviderBug;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -24,7 +25,10 @@ builder.Services.AddMvcCore().AddMvcOptions(options =>
 	options.ModelBinderProviders.Add(new JsonModelBinderProvider());
 
 	options.ValueProviderFactories.Clear();
-	options.ValueProviderFactories.Add(new JsonValueProviderFactory());
+	options.ValueProviderFactories.Add(new JsonValueProviderFactory(new JsonSerializerOptions()
+	{
+		NumberHandling = JsonNumberHandling.AllowReadingFromString
+	}));
 
 
 }).AddJsonOptions(options =>

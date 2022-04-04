@@ -119,13 +119,13 @@ namespace CoreBasic.Web.LogicControllers
 
 		[HttpPost]
 		[Route("~/api/ComplexSingleObject")]
-		public async Task<IActionResult> ComplexSingleObject(ObjectA A)
+		public async Task<IActionResult> ComplexSingleObject(ObjectA AA)
 		{
 			await Task.Yield();
 
 			return Ok(new
 			{
-				A
+				AA
 			});
 		}
 

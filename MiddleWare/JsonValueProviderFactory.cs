@@ -1,32 +1,24 @@
 using System.Diagnostics;
 
+// JsonValueProvider
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-03-30
-// Version: 2.2n
+// Date: 2022-04-04
+// Version: 1.0
 
 using System.Text.Json;
 
-using System.Globalization;
-
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
 
-namespace ValueProviderBug;
-
-public interface IJsonGetOject
+public class JsonValueProvider : IValueProvider
 {
-	object? GetObject(string key, Type t);
-}
-
-public class JsonValueProvider : IValueProvider, IJsonGetOject
-{
-	private readonly CultureInfo CultureInfo;
+	private readonly JsonSerializerOptions? jsonSerializerOptions;
 	private readonly JsonDocument? doc;
 
-	public JsonValueProvider(JsonDocument? doc, CultureInfo CultureInfo)
+	public JsonValueProvider(JsonDocument? doc, JsonSerializerOptions? options)
 	{
-		this.CultureInfo = CultureInfo;
+		this.jsonSerializerOptions = options;
 
 		this.doc = doc;
 	}
@@ -39,12 +31,12 @@ public class JsonValueProvider : IValueProvider, IJsonGetOject
 			return doc.RootElement.TryGetProperty(prefix, out _);
 	}
 
-	public object? GetObject(string key, Type t)
+	public object? GetModel(string key, Type t)
 	{
 		if (doc == null)
 			return null;
 		else
-			return doc.RootElement.GetProperty(key).Deserialize(t);
+			return doc.RootElement.GetProperty(key).Deserialize(t, jsonSerializerOptions);
 	}
 
 	/// <summary>
@@ -60,15 +52,15 @@ public class JsonValueProvider : IValueProvider, IJsonGetOject
 
 public class JsonValueProviderFactory : IValueProviderFactory
 {
-	private readonly CultureInfo CultureInfo;
+	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
-	private static async Task AddValueProviderAsync(ValueProviderFactoryContext context, CultureInfo CultureInfo)
+	private static async Task AddValueProviderAsync(ValueProviderFactoryContext context, JsonSerializerOptions? options)
 	{
 		try
 		{
 			var jsonDocument = await JsonDocument.ParseAsync(context.ActionContext.HttpContext.Request.Body);
 
-			context.ValueProviders.Add(new JsonValueProvider(jsonDocument, CultureInfo));
+			context.ValueProviders.Add(new JsonValueProvider(jsonDocument, options));
 		}
 		catch (Exception eee)
 		{
@@ -89,20 +81,21 @@ public class JsonValueProviderFactory : IValueProviderFactory
 			{
 				if (Request.ContentLength == null || // Chunked encoding
 					Request.ContentLength >= 2) // Normal encoding, using content length minimum '{}'
-					return AddValueProviderAsync(context, this.CultureInfo);
+					return AddValueProviderAsync(context, this.jsonSerializerOptions);
 			}
 		}
 		return Task.CompletedTask;
 	}
-	public JsonValueProviderFactory(string CultureName) : base()
+	public JsonValueProviderFactory(JsonSerializerOptions Options) : base()
 	{
-		this.CultureInfo = new CultureInfo(CultureName);
+		this.jsonSerializerOptions = Options;
 	}
 
-	public JsonValueProviderFactory() : base()
+	public JsonValueProviderFactory()
 	{
-		this.CultureInfo = CultureInfo.InvariantCulture;
+		this.jsonSerializerOptions = null;
 	}
+
 }
 
 
