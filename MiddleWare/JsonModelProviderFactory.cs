@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-// JsonValueProvider
+// JsonModelProviderFactory, JsonModelProvider
 // (C) 2022 Alphons van der Heijden
 // Date: 2022-04-04
 // Version: 1.0
@@ -32,7 +32,6 @@ public class JsonModelProvider : IModelProvider, IValueProvider // IValueProvide
 
 	public bool ContainsPrefix(string prefix)
 	{
-		Debug.WriteLine($"Prefix:{prefix}");
 		if (jsonDocument == null)
 			return false;
 		else
@@ -61,28 +60,7 @@ public class JsonModelProvider : IModelProvider, IValueProvider // IValueProvide
 	[Obsolete("Use GetModel")]
 	public ValueProviderResult GetValue(string key)
 	{
-		if (jsonDocument == null)
-			return ValueProviderResult.None;
-
-		if (jsonDocument.RootElement.TryGetProperty(key, out JsonElement el) == false)
-			return ValueProviderResult.None;
-		
-		switch (el.ValueKind)
-		{
-			case JsonValueKind.String:
-			case JsonValueKind.Number:
-				return new ValueProviderResult(new string[] { el.ToString() });
-			case JsonValueKind.True:
-				return new ValueProviderResult(new string[] { "true" });
-			case JsonValueKind.False:
-				return new ValueProviderResult(new string[] { "false" });
-			case JsonValueKind.Array:
-				return ValueProviderResult.None;
-			case JsonValueKind.Null:
-				return new ValueProviderResult(new string[] { null });
-			default:
-				return ValueProviderResult.None;
-		}
+		return ValueProviderResult.None;
 	}
 }
 

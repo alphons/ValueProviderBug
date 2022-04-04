@@ -1,4 +1,4 @@
-﻿// JsonModelBinder
+﻿// GenericModelBinderProvider, GenericModelBinder
 // (C) 2022 Alphons van der Heijden
 // Date: 2022-04-04
 // Version: 1.0
@@ -10,7 +10,7 @@ using System.Runtime.ExceptionServices;
 namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 
 /// <summary>
-/// An <see cref="IModelBinder"/> for most objects.
+/// An <see cref="IModelBinder"/> sufficient for most objects.
 /// </summary>
 public class GenericModelBinder : IModelBinder
 {
@@ -69,7 +69,7 @@ public class GenericModelBinder : IModelBinder
 }
 
 /// <summary>
-/// An <see cref="IModelBinderProvider"/> for ModelBinderProvided data types.
+/// An <see cref="IModelBinderProvider"/> a GenericModelBinderProvider for the famous GenericModelBinder.
 /// </summary>
 public class GenericModelBinderProvider : IModelBinderProvider
 {
