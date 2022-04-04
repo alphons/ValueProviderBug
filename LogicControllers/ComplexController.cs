@@ -43,26 +43,26 @@ namespace CoreBasic.Web.LogicControllers
 		}
 
 		[HttpPost]
-		[Route("~/api/ComplexList")]
-		public async Task<IActionResult> ComplexList(List<string> list)
+		[Route("~/api/ComplexListOfStrings")]
+		public async Task<IActionResult> ComplexListOfStrings(List<string> ListOfStrings)
 		{
 			await Task.Yield();
 
 			return Ok(new
 			{
-				list
+				ListOfStrings
 			});
 		}
 
 		[HttpPost]
-		[Route("~/api/ComplexListInt")]
-		public async Task<IActionResult> ComplexListInt(List<int?> list)
+		[Route("~/api/ComplexListOfInts")]
+		public async Task<IActionResult> ComplexListOfInts(List<int?> ListOfInts)
 		{
 			await Task.Yield();
 
 			return Ok(new
 			{
-				list
+				ListOfInts
 			});
 		}
 

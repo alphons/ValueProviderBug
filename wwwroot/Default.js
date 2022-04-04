@@ -20,6 +20,13 @@ function Init()
 	result = $id('Result');
 }
 
+async function ShowBugs()
+{
+	r = await NetproxyAsync("./api/ComplexListOfStrings", {});
+	r = await NetproxyAsync("./api/ComplexListOfInts", {});
+	r = await NetproxyAsync("./api/ComplexArray", {});
+}
+
 function NetproxyAsync(url, data)
 {
 	return new Promise((resolve, reject) =>
@@ -28,10 +35,21 @@ function NetproxyAsync(url, data)
 	});
 }
 
-function C(a,b)
+var nnn;
+var intNnn;
+
+function C(s, a,b)
 {
+	if (nnn == s)
+		intNnn++;
+	else
+	{
+		nnn = s;
+		intNnn = 1;
+	}
+
 	if (a != b)
-		result.innerText += a + ' != ' + b + '\n';
+		result.innerText += s + "(" + intNnn + ") :: " + a + ' != ' + b + '\n';
 	return a != b;
 }
 
@@ -41,43 +59,49 @@ async function UnitTest()
 	var r;
 
 	r = await NetproxyAsync("./api/ComplexDouble", { F: 123.456 });
-	C(r.F, 123.456);
+	C("ComplexDouble", r.F, 123.456);
 
 	r = await NetproxyAsync("./api/ComplexDouble", { F: '123.456' }); // JsonNumberHandling.AllowReadingFromString
-	C(r.F, 123.456);
+	C("ComplexDouble", r.F, 123.456);
 
 	r = await NetproxyAsync("./api/ComplexSingleObject", { AA: { a: 'aaa', b: 'bbb' } });
+	C("ComplexSingleObject", r.AA.a, 'aaa');
+	C("ComplexSingleObject", r.AA.b, 'bbb');
 
 	r = await NetproxyAsync("./api/ComplexString", { Name: 'This is a test' });
-	C(r.Name, 'This is a test');
+	C("ComplexString", r.Name, 'This is a test');
 
 	r = await NetproxyAsync("./api/ComplexStringInt", { Name: 'This is a test', A : 123 });
-	C(r.Name, 'This is a test');
-	C(r.A, 123);
+	C("ComplexStringInt", r.Name, 'This is a test');
+	C("ComplexStringInt", r.A, 123);
 
-	r = await NetproxyAsync("./api/ComplexList", { list: ['a', '', 'b', null, 'c'] });
-	C(r.list[0], 'a');
-	C(r.list[1], '');
-	C(r.list[2], 'b');
-	C(r.list[3], null);
-	C(r.list[4], 'c');
+	r = await NetproxyAsync("./api/ComplexListOfStrings", { ListOfStrings: ['a', '', 'b', null, 'c'] });
+	C("ComplexList", r.ListOfStrings[0], 'a');
+	C("ComplexList", r.ListOfStrings[1], '');
+	C("ComplexList", r.ListOfStrings[2], 'b');
+	C("ComplexList", r.ListOfStrings[3], null);
+	C("ComplexList", r.ListOfStrings[4], 'c');
 
-	r = await NetproxyAsync("./api/ComplexListInt", { list: [ 0, 1 , 2, null , 4] });
-	C(r.list[0], 0);
-	C(r.list[1], 1);
-	C(r.list[2], 2);
-	C(r.list[3], null);
-	C(r.list[4], 4);
-
-	r = await NetproxyAsync("./api/ComplexArray", { list: [{ a: 'a', b: null }, null, { a: 'c', b: 'd' }] } );
-	var r0 = r.list[0];
-	var r1 = r.list[1];
-	var r2 = r.list[2];
-	C(r0.a, 'a')
-	C(r0.b, null);
-	C(r1, null);
-	C(r2.a, 'c');
-	C(r2.b, 'd');
+	r = await NetproxyAsync("./api/ComplexListOfInts", { ListOfInts: [ 0, 1 , 2, null , 4] });
+	C("ComplexListInt", r.ListOfInts[0], 0);
+	C("ComplexListInt", r.ListOfInts[1], 1);
+	C("ComplexListInt", r.ListOfInts[2], 2);
+	C("ComplexListInt", r.ListOfInts[3], null);
+	C("ComplexListInt", r.ListOfInts[4], 4);
+	
+	r = await NetproxyAsync("./api/ComplexArray", { list: [{ a: 'a', b: null }, null, { a: 'c', b: 'd' }] });
+	C("ComplexArray", r.list.length, 3);
+	if (r.list.length == 3)
+	{
+		var r0 = r.list[0];
+		var r1 = r.list[1];
+		var r2 = r.list[2];
+		C("ComplexArray", r0.a, 'a')
+		C("ComplexArray", r0.b, null);
+		C("ComplexArray", r1, null);
+		C("ComplexArray", r2.a, 'c');
+		C("ComplexArray", r2.b, 'd');
+	}
 
 	r = await NetproxyAsync("./api/ComplexArrayArray",
 	{
@@ -94,22 +118,25 @@ async function UnitTest()
 				]
 		}
 	});
-	C(r.Group, "groupy");
+	C("ComplexArrayArray", r.Group, "groupy");
 	var l = r.List;
-	C(l.Name, 'My Name is');
+	C("ComplexArrayArray", l.Name, 'My Name is');
 	var uu = l.Users;
-	C(uu.length, 4);
+	C("ComplexArrayArray", uu.length, 4);
 	var u = uu[0];
-	C(u[0], 'admins');
-	C(u[1], '0');
+	C("ComplexArrayArray", u[0], 'admins');
+	C("ComplexArrayArray", u[1], '0');
 	u = uu[1];
-	C(u[0], 'editors');
-	C(u[1], '1');
+	C("ComplexArrayArray", u[0], 'editors');
+	C("ComplexArrayArray", u[1], '1');
 	u = uu[2];
-	C(u, null);
-	u = uu[3];
-	C(u[0], 'sisters');
-	C(u[1], '3');
+	C("ComplexArrayArray", u, null);
+	if (uu.length == 4)
+	{
+		u = uu[3];
+		C("ComplexArrayArray", u[0], 'sisters');
+		C("ComplexArrayArray", u[1], '3');
+	}
 
 	r = await NetproxyAsync("./api/ComplexArrayArrayClass",
 		{
@@ -127,32 +154,32 @@ async function UnitTest()
 					]
 			}
 		});
-	C(r.Testing, true);
-	C(r.Relaxed, false);
-	C(r.Group, "Nice Group");
+	C("ComplexArrayArrayClass", r.Testing, true);
+	C("ComplexArrayArrayClass", r.Relaxed, false);
+	C("ComplexArrayArrayClass", r.Group, "Nice Group");
 	var i = r.GroupInfo;
-	C(i.Name, "My Name is");
+	C("ComplexArrayArrayClass", i.Name, "My Name is");
 	var us = i.Users;
-	C(us.length, 3);
-	C(us[0][0].Name, "User00");
-	C(us[0][0].Alias.length, 3);
-	C(us[0][1].Name, "User01");
-	C(us[0][1].Alias, null);
-	C(us[1][0].Name, "User10");
-	C(us[1][0].Alias, null);
-	C(us[1][1].Name, "User11");
-	C(us[1][1].Alias, null);
-	C(us[2][0].Name, "User20");
-	C(us[2][0].Alias, null);
-	C(us[2][1].Name, "User21");
-	C(us[2][1].Alias, null);
+	C("ComplexArrayArrayClass", us.length, 3);
+	C("ComplexArrayArrayClass", us[0][0].Name, "User00");
+	C("ComplexArrayArrayClass", us[0][0].Alias.length, 3);
+	C("ComplexArrayArrayClass", us[0][1].Name, "User01");
+	C("ComplexArrayArrayClass", us[0][1].Alias, null);
+	C("ComplexArrayArrayClass", us[1][0].Name, "User10");
+	C("ComplexArrayArrayClass", us[1][0].Alias, null);
+	C("ComplexArrayArrayClass", us[1][1].Name, "User11");
+	C("ComplexArrayArrayClass", us[1][1].Alias, null);
+	C("ComplexArrayArrayClass", us[2][0].Name, "User20");
+	C("ComplexArrayArrayClass", us[2][0].Alias, null);
+	C("ComplexArrayArrayClass", us[2][1].Name, "User21");
+	C("ComplexArrayArrayClass", us[2][1].Alias, null);
 	var al = us[0][0].Alias;
-	C(al[0], 'aliasa');
-	C(al[1], 'aliasb');
-	C(al[2], 'aliasc');
+	C("ComplexArrayArrayClass", al[0], 'aliasa');
+	C("ComplexArrayArrayClass", al[1], 'aliasb');
+	C("ComplexArrayArrayClass", al[2], 'aliasc');
 
 	// Checking, run till end
-	C(true, false);
+	C("ready", true, false);
 }
 
 

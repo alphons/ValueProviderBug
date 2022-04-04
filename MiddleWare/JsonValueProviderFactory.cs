@@ -31,6 +31,7 @@ public class JsonValueProvider : IValueProvider, IModelProvider
 
 	public bool ContainsPrefix(string prefix)
 	{
+		Debug.WriteLine($"Prefix:{prefix}");
 		if (doc == null)
 			return false;
 		else
@@ -59,7 +60,28 @@ public class JsonValueProvider : IValueProvider, IModelProvider
 	[Obsolete("Use GetModel")]
 	public ValueProviderResult GetValue(string key)
 	{
-		return ValueProviderResult.None;
+		if (doc == null)
+			return ValueProviderResult.None;
+
+		if (doc.RootElement.TryGetProperty(key, out JsonElement el) == false)
+			return ValueProviderResult.None;
+		
+		switch (el.ValueKind)
+		{
+			case JsonValueKind.String:
+			case JsonValueKind.Number:
+				return new ValueProviderResult(new string[] { el.ToString() });
+			case JsonValueKind.True:
+				return new ValueProviderResult(new string[] { "true" });
+			case JsonValueKind.False:
+				return new ValueProviderResult(new string[] { "false" });
+			case JsonValueKind.Array:
+				return ValueProviderResult.None;
+			case JsonValueKind.Null:
+				return new ValueProviderResult(new string[] { null });
+			default:
+				return ValueProviderResult.None;
+		}
 	}
 }
 

@@ -12,15 +12,19 @@ var services = builder.Services;
 
 builder.Services.AddMvcCore().AddMvcOptions(options =>
 {
-	options.ModelBinderProviders.Clear();
-	options.ModelBinderProviders.Add(new JsonModelBinderProvider());
+	// ArrayModelBinderProvider 
+	// CollectionModelBinderProvider 
+	// ComplexObjectModelBinderProvider 
 
-	options.ValueProviderFactories.Clear(); // optional
-	options.ValueProviderFactories.Add(new JsonValueProviderFactory(new JsonSerializerOptions()
-	{
-		NumberHandling = JsonNumberHandling.AllowReadingFromString
-	}));
+	//options.ModelBinderProviders.Insert(0, new JsonModelBinderProvider());
+	//options.ValueProviderFactories.Add(new JsonValueProviderFactory(new JsonSerializerOptions()
+	//{
+	//	NumberHandling = JsonNumberHandling.AllowReadingFromString
+	//}));
 
+	options.ValueProviderFactories.Add(new TestWeb.SomeValueProviderFactory());
+
+	//options.ValueProviderFactories.Add(new JsonParametersValueProviderFactory());
 
 }).AddJsonOptions(options =>
 {
