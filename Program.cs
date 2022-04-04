@@ -1,6 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -12,19 +12,10 @@ var services = builder.Services;
 
 builder.Services.AddMvcCore().AddMvcOptions(options =>
 {
-	//options.OutputFormatters.Clear();
-	//options.InputFormatters.Clear();
-	//options.ModelValidatorProviders.Clear();
-	//options.Conventions.Clear();
-	//options.Filters.Clear();
-	//options.ModelMetadataDetailsProviders.Clear();
-	//options.ModelValidatorProviders.Clear();
-	//options.ModelMetadataDetailsProviders.Clear();
-
 	options.ModelBinderProviders.Clear();
 	options.ModelBinderProviders.Add(new JsonModelBinderProvider());
 
-	options.ValueProviderFactories.Clear();
+	options.ValueProviderFactories.Clear(); // optional
 	options.ValueProviderFactories.Add(new JsonValueProviderFactory(new JsonSerializerOptions()
 	{
 		NumberHandling = JsonNumberHandling.AllowReadingFromString
@@ -40,11 +31,8 @@ builder.Services.AddMvcCore().AddMvcOptions(options =>
 var app = builder.Build();
 
 app.UseRouting();
-
 app.MapControllers();
-
 app.UseDefaultFiles();
 app.UseStaticFiles();
-
 
 app.Run();
