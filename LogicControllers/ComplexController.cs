@@ -35,7 +35,11 @@ namespace CoreBasic.Web.LogicControllers
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				Name,
+				A
+			});
 		}
 
 		[HttpPost]
@@ -52,11 +56,14 @@ namespace CoreBasic.Web.LogicControllers
 
 		[HttpPost]
 		[Route("~/api/ComplexListInt")]
-		public async Task<IActionResult> ComplexListInt(List<int> list)
+		public async Task<IActionResult> ComplexListInt(List<int?> list)
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				list
+			});
 		}
 
 		[HttpPost]
@@ -65,7 +72,10 @@ namespace CoreBasic.Web.LogicControllers
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				list
+			});
 		}
 
 
@@ -75,7 +85,10 @@ namespace CoreBasic.Web.LogicControllers
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				list
+			});
 		}
 
 		[HttpPost]
@@ -84,7 +97,11 @@ namespace CoreBasic.Web.LogicControllers
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				Name,
+				list
+			});
 		}
 
 		public class ObjectB
@@ -101,12 +118,28 @@ namespace CoreBasic.Web.LogicControllers
 		}
 
 		[HttpPost]
+		[Route("~/api/ComplexSingleObject")]
+		public async Task<IActionResult> ComplexSingleObject(ObjectA A)
+		{
+			await Task.Yield();
+
+			return Ok(new
+			{
+				A
+			});
+		}
+
+
+		[HttpPost]
 		[Route("~/api/ComplexArray")]
 		public async Task<IActionResult> ComplexArray(ObjectA[] list)
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				list
+			});
 		}
 
 		[HttpPost]
@@ -115,7 +148,10 @@ namespace CoreBasic.Web.LogicControllers
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				objB
+			});
 		}
 
 		public class ObjectC
@@ -130,7 +166,11 @@ namespace CoreBasic.Web.LogicControllers
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				Group,
+				List
+			});
 		}
 
 		public class Usert
@@ -152,7 +192,13 @@ namespace CoreBasic.Web.LogicControllers
 		{
 			await Task.Yield();
 
-			return Ok();
+			return Ok(new
+			{
+				Testing,
+				Relaxed,
+				Group,
+				GroupInfo
+			});
 		}
 
 	}

@@ -4,6 +4,15 @@ using System.Diagnostics;
 // Date: 2022-03-30
 // Version: 2.2n
 
+//
+// This works with the classic approach of the valueprovider/binder of ASP .NET Core
+// However, there is a fundamental bug in the deserialize of the project using only key names
+// When using Arrays having null elements, the system is broken
+// Therefore we have to use he combination of these two:
+// - JsonValueProviderFactory.cs
+// - JsonModelBinderProvider.cs
+//
+
 using System.Text.Json;
 using System.Text.Json.Nodes;
 

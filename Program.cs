@@ -1,6 +1,8 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
+using ValueProviderBug;
+
 var builder = WebApplication.CreateBuilder();
 
 var services = builder.Services;
@@ -10,21 +12,20 @@ var services = builder.Services;
 builder.Services.AddMvcCore().AddMvcOptions(options =>
 {
 	//options.OutputFormatters.Clear();
-	options.InputFormatters.Clear();
-	options.ValueProviderFactories.Clear();
-	options.ModelValidatorProviders.Clear();
-	options.Conventions.Clear();
-	options.Filters.Clear();
-	options.ModelMetadataDetailsProviders.Clear();
-	options.ModelValidatorProviders.Clear();
-	options.ModelMetadataDetailsProviders.Clear();
+	//options.InputFormatters.Clear();
+	//options.ModelValidatorProviders.Clear();
+	//options.Conventions.Clear();
+	//options.Filters.Clear();
+	//options.ModelMetadataDetailsProviders.Clear();
+	//options.ModelValidatorProviders.Clear();
+	//options.ModelMetadataDetailsProviders.Clear();
+
 	options.ModelBinderProviders.Clear();
+	options.ModelBinderProviders.Add(new JsonModelBinderProvider());
 
-	options.ModelBinderProviders.Add(new ValueProviderBug.SimpleTypeModelBinderProvider()); // "" -> null
-	options.ModelBinderProviders.Add(new ValueProviderBug.CollectionModelBinderProvider()); // Problems having null values
+	options.ValueProviderFactories.Clear();
+	options.ValueProviderFactories.Add(new JsonValueProviderFactory());
 
-	//options.ValueProviderFactories.Add(new TestWeb.SomeValueProviderFactory());
-	options.ValueProviderFactories.Add(new CoreBasic.CorePlus.MiddleWare.JsonParametersValueProviderFactory());
 
 }).AddJsonOptions(options =>
 {
