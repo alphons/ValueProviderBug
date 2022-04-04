@@ -11,7 +11,13 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
 
-public class JsonValueProvider : IValueProvider
+public interface IModelProvider
+{
+	object? GetModel(string key, Type t);
+}
+
+
+public class JsonValueProvider : IValueProvider, IModelProvider
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 	private readonly JsonDocument? doc;
@@ -31,6 +37,12 @@ public class JsonValueProvider : IValueProvider
 			return doc.RootElement.TryGetProperty(prefix, out _);
 	}
 
+	/// <summary>
+	/// Returns object of type when available
+	/// </summary>
+	/// <param name="key">name of the model</param>
+	/// <param name="t">type of the model</param>
+	/// <returns>null or object model of type</returns>
 	public object? GetModel(string key, Type t)
 	{
 		if (doc == null)
@@ -40,10 +52,11 @@ public class JsonValueProvider : IValueProvider
 	}
 
 	/// <summary>
-	/// Obsolete, use GetObject instead
+	/// Obsolete, use GetModel instead
 	/// </summary>
 	/// <param name="key"></param>
 	/// <returns></returns>
+	[Obsolete("Use GetModel")]
 	public ValueProviderResult GetValue(string key)
 	{
 		return ValueProviderResult.None;
