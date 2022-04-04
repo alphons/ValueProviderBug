@@ -11,12 +11,12 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
 
-public class JsonModelProvider : IGetModelProvider, IValueProvider // IValueProvider for compatibility reasons
+public class JsonGetModelProvider : IGetModelProvider, IValueProvider // IValueProvider for compatibility reasons
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 	private readonly JsonDocument? jsonDocument;
 
-	public JsonModelProvider(JsonDocument? jsonDocument, JsonSerializerOptions? options)
+	public JsonGetModelProvider(JsonDocument? jsonDocument, JsonSerializerOptions? options)
 	{
 		this.jsonSerializerOptions = options;
 
@@ -57,7 +57,7 @@ public class JsonModelProvider : IGetModelProvider, IValueProvider // IValueProv
 	}
 }
 
-public class JsonModelProviderFactory : IValueProviderFactory
+public class JsonGetModelProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
@@ -67,7 +67,7 @@ public class JsonModelProviderFactory : IValueProviderFactory
 		{
 			var jsonDocument = await JsonDocument.ParseAsync(context.ActionContext.HttpContext.Request.Body);
 
-			context.ValueProviders.Add(new JsonModelProvider(jsonDocument, options));
+			context.ValueProviders.Add(new JsonGetModelProvider(jsonDocument, options));
 		}
 		catch (Exception eee)
 		{
@@ -93,12 +93,12 @@ public class JsonModelProviderFactory : IValueProviderFactory
 		}
 		return Task.CompletedTask;
 	}
-	public JsonModelProviderFactory(JsonSerializerOptions Options) : base()
+	public JsonGetModelProviderFactory(JsonSerializerOptions Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
 
-	public JsonModelProviderFactory()
+	public JsonGetModelProviderFactory()
 	{
 		this.jsonSerializerOptions = null;
 	}

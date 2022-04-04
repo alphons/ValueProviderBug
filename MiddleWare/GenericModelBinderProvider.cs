@@ -42,12 +42,12 @@ public class GenericModelBinder : IModelBinder
 		if (compositeValueProvider == null)
 			throw new ArgumentNullException(nameof(compositeValueProvider));
 
-		if (compositeValueProvider.FirstOrDefault(x => x is IGetModelProvider) is not IGetModelProvider modelProvider)
-			throw new ArgumentNullException(nameof(modelProvider));
+		if (compositeValueProvider.FirstOrDefault(x => x is IGetModelProvider) is not IGetModelProvider getModelProvider)
+			throw new ArgumentNullException(nameof(getModelProvider));
 
 		try
 		{
-			var model = modelProvider.GetModel(bindingContext.ModelName, this.type);
+			var model = getModelProvider.GetModel(bindingContext.ModelName, this.type);
 
 			bindingContext.Result = ModelBindingResult.Success(model);
 

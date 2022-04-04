@@ -11,7 +11,7 @@ var services = builder.Services;
 builder.Services.AddMvcCore().AddMvcOptions(options =>
 {
 	options.ModelBinderProviders.Insert(0, new GenericModelBinderProvider());
-	options.ValueProviderFactories.Add(new JsonModelProviderFactory(new JsonSerializerOptions()
+	options.ValueProviderFactories.Add(new JsonGetModelProviderFactory(new JsonSerializerOptions()
 	{
 		NumberHandling = JsonNumberHandling.AllowReadingFromString
 	}));
