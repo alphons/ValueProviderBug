@@ -10,22 +10,21 @@ using System.Runtime.ExceptionServices;
 namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 
 /// <summary>
-/// An <see cref="IModelBinder"/> for simple types.
+/// An <see cref="IModelBinder"/> for most objects.
 /// </summary>
-public class JsonModelBinder : IModelBinder
+public class GenericModelBinder : IModelBinder
 {
 	private readonly Type type;
 
 	/// <summary>
-	/// Initializes a new instance of <see cref="SimpleTypeModelBinder"/>.
+	/// Initializes a new instance of <see cref="GenericModelBinder"/>.
 	/// </summary>
 	/// <param name="type">The type to create binder for.</param>
-	public JsonModelBinder(Type type)
+	public GenericModelBinder(Type type)
 	{
 		this.type = type ?? throw new ArgumentNullException(nameof(type));
 	}
 
-	/// <inheritdoc />
 	public Task BindModelAsync(ModelBindingContext bindingContext)
 	{
 		if (bindingContext == null)
@@ -36,7 +35,7 @@ public class JsonModelBinder : IModelBinder
 		if (compositeValueProvider == null)
 			throw new ArgumentNullException(nameof(compositeValueProvider));
 
-		if (compositeValueProvider.FirstOrDefault(x => x.GetType() == typeof(JsonModelProvider)) is not JsonModelProvider modelProvider)
+		if (compositeValueProvider.FirstOrDefault(x => x is IModelProvider) is not IModelProvider modelProvider)
 			throw new ArgumentNullException(nameof(modelProvider));
 
 		try
@@ -70,11 +69,10 @@ public class JsonModelBinder : IModelBinder
 }
 
 /// <summary>
-/// An <see cref="IModelBinderProvider"/> for binding Json provided data types.
+/// An <see cref="IModelBinderProvider"/> for ModelBinderProvided data types.
 /// </summary>
-public class JsonModelBinderProvider : IModelBinderProvider
+public class GenericModelBinderProvider : IModelBinderProvider
 {
-    /// <inheritdoc />
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
         if (context == null)
@@ -82,6 +80,6 @@ public class JsonModelBinderProvider : IModelBinderProvider
             throw new ArgumentNullException(nameof(context));
         }
 
-        return new JsonModelBinder(context.Metadata.ModelType);
+        return new GenericModelBinder(context.Metadata.ModelType);
     }
 }

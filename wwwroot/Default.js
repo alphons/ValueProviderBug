@@ -20,7 +20,7 @@ function Init()
 	result = $id('Result');
 }
 
-async function ShowBugs()
+async function ShowBugs() //dont use this!
 {
 	r = await NetproxyAsync("./api/ComplexListOfStrings", {});
 	r = await NetproxyAsync("./api/ComplexListOfInts", {});

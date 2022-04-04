@@ -21,22 +21,22 @@ public interface IModelProvider
 public class JsonModelProvider : IModelProvider, IValueProvider // IValueProvider for compatibility reasons
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
-	private readonly JsonDocument? doc;
+	private readonly JsonDocument? jsonDocument;
 
-	public JsonModelProvider(JsonDocument? doc, JsonSerializerOptions? options)
+	public JsonModelProvider(JsonDocument? jsonDocument, JsonSerializerOptions? options)
 	{
 		this.jsonSerializerOptions = options;
 
-		this.doc = doc;
+		this.jsonDocument = jsonDocument;
 	}
 
 	public bool ContainsPrefix(string prefix)
 	{
 		Debug.WriteLine($"Prefix:{prefix}");
-		if (doc == null)
+		if (jsonDocument == null)
 			return false;
 		else
-			return doc.RootElement.TryGetProperty(prefix, out _);
+			return jsonDocument.RootElement.TryGetProperty(prefix, out _);
 	}
 
 	/// <summary>
@@ -47,10 +47,10 @@ public class JsonModelProvider : IModelProvider, IValueProvider // IValueProvide
 	/// <returns>null or object model of type</returns>
 	public object? GetModel(string key, Type t)
 	{
-		if (doc == null)
+		if (jsonDocument == null)
 			return null;
 		else
-			return doc.RootElement.GetProperty(key).Deserialize(t, jsonSerializerOptions);
+			return jsonDocument.RootElement.GetProperty(key).Deserialize(t, jsonSerializerOptions);
 	}
 
 	/// <summary>
@@ -61,10 +61,10 @@ public class JsonModelProvider : IModelProvider, IValueProvider // IValueProvide
 	[Obsolete("Use GetModel")]
 	public ValueProviderResult GetValue(string key)
 	{
-		if (doc == null)
+		if (jsonDocument == null)
 			return ValueProviderResult.None;
 
-		if (doc.RootElement.TryGetProperty(key, out JsonElement el) == false)
+		if (jsonDocument.RootElement.TryGetProperty(key, out JsonElement el) == false)
 			return ValueProviderResult.None;
 		
 		switch (el.ValueKind)
