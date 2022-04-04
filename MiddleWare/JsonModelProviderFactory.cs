@@ -11,14 +11,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
 
-public interface IModelProvider
-{
-	object? GetModel(string key, Type t);
-	bool ContainsPrefix(string prefix);
-}
-
-
-public class JsonModelProvider : IModelProvider, IValueProvider // IValueProvider for compatibility reasons
+public class JsonModelProvider : IGetModelProvider, IValueProvider // IValueProvider for compatibility reasons
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 	private readonly JsonDocument? jsonDocument;

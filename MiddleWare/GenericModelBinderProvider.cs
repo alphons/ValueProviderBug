@@ -9,8 +9,15 @@ using System.Runtime.ExceptionServices;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding;
 
+public interface IGetModelProvider
+{
+	object? GetModel(string key, Type t);
+	bool ContainsPrefix(string prefix);
+}
+
+
 /// <summary>
-/// An <see cref="IModelBinder"/> sufficient for most objects.
+/// An <see cref="IGetModelProvider"/> sufficient for most objects.
 /// </summary>
 public class GenericModelBinder : IModelBinder
 {
@@ -35,7 +42,7 @@ public class GenericModelBinder : IModelBinder
 		if (compositeValueProvider == null)
 			throw new ArgumentNullException(nameof(compositeValueProvider));
 
-		if (compositeValueProvider.FirstOrDefault(x => x is IModelProvider) is not IModelProvider modelProvider)
+		if (compositeValueProvider.FirstOrDefault(x => x is IGetModelProvider) is not IGetModelProvider modelProvider)
 			throw new ArgumentNullException(nameof(modelProvider));
 
 		try
