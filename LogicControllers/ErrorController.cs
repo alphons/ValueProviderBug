@@ -56,6 +56,18 @@ namespace ValueProviderBug.LogicControllers
 		}
 
 		[HttpPost]
+		[Route("~/api/ErrorLog")]
+		public async Task<IActionResult> ApiErrorLog(string Message, string ExceptionType, string Referer, string Url, string Status)
+		{
+			if (Status == "0")
+				return Ok();
+
+			await Task.Yield();
+
+			return Ok();
+		}
+
+		[HttpPost]
 		[Route("~/error/ErrorLog")]
 		public async Task<IActionResult> ErrorLog(string Message, string ExceptionType, string Referer, string Url, string Status)
 		{

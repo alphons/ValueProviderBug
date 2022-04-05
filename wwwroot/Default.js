@@ -13,6 +13,11 @@ function PageEvents()
 		if (typeof window[e.target.id] === "function")
 			window[e.target.id].call(e, e);
 	});
+
+	$id("UploadExample").on("change", function (e)
+	{
+		StartUpload(e);
+	});
 }
 
 function Init()
@@ -226,4 +231,31 @@ async function UnitTest()
 
 
 
+function ProgressHandler(event)
+{
+	var percent = 0;
+	var position = event.loaded || event.position;
+	var total = event.total;
+	if (event.lengthComputable)
+		percent = Math.ceil(position / total * 100);
+	//console.log("ProgressHandler: Uploading " + percent + " %");
+	$id("PopTitle").innerText = "Uploading " + percent + "%";
+}
 
+function StartUpload(e)
+{
+	var el = e.target;
+
+	var file = el.files[0];
+
+	$id("Result").innerText = 'Uploading';
+
+	var formData = new FormData();
+
+	formData.append("file", file, file.name);
+
+	netproxy("/api/Upload", formData, function ()
+	{
+		$id("Result").innerText = 'Ready';
+	}, window.NetProxyErrorHandler, ProgressHandler);
+}

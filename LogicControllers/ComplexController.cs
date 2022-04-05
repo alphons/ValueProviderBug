@@ -259,5 +259,34 @@ namespace CoreBasic.Web.LogicControllers
 			});
 		}
 
+
+		/// <summary>
+		/// Uploads have default a maximum of 30MByte presenting upload example of 2.5GB
+		///
+		/// For IIS Limit maxAllowedContentLength in Web.config (in the root of the app, not in wwwroot content folder!)
+		/// 
+		/// </summary>
+		/// <param name="formFile"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("~/api/Upload")]
+		[RequestSizeLimit(2_500_000_000)]
+		[RequestFormLimits(MultipartBodyLengthLimit = 2_500_000_000)]
+		public async Task<IActionResult> Upload(IFormFile file)
+		{
+			if (file.Length > 0)
+			{
+				using var ms = new MemoryStream();
+				await file.CopyToAsync(ms); // some dummy operation
+				System.Diagnostics.Debug.WriteLine("yes " + ms.Length);
+			}
+			return Ok(new 
+			{ 
+				file.Length 
+			});
+		}
+
+
+
 	}
 }
