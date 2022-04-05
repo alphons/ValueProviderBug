@@ -272,7 +272,7 @@ namespace CoreBasic.Web.LogicControllers
 		[Route("~/api/Upload")]
 		[RequestSizeLimit(2_500_000_000)]
 		[RequestFormLimits(MultipartBodyLengthLimit = 2_500_000_000)]
-		public async Task<IActionResult> Upload(IFormFile file)
+		public async Task<IActionResult> Upload(IFormFile file, string Form1)
 		{
 			if (file.Length > 0)
 			{
@@ -282,7 +282,8 @@ namespace CoreBasic.Web.LogicControllers
 			}
 			return Ok(new 
 			{ 
-				file.Length 
+				file.Length,
+				Form1
 			});
 		}
 

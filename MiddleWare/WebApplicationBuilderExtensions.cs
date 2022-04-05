@@ -34,7 +34,7 @@ public static class MvcCoreCorrectedExtensions
 			options.ValueProviderFactories.Add(new QueryGetModelProviderFactory());
 			options.ValueProviderFactories.Add(new HeaderGetModelProviderFactory());
 			options.ValueProviderFactories.Add(new RouteGetModelProviderFactory());
-			options.ValueProviderFactories.Add(new FileGetModelProviderFactory());
+			options.ValueProviderFactories.Add(new FormGetModelProviderFactory()); // can also do file uploads
 
 			// Generic binder gettings complete de-serialized models of ModelProvider
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 
 // JsonModelProviderFactory, JsonModelProvider
@@ -12,14 +13,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Alternative.DependencyInjection;
 
 #nullable enable
-public class FileGetModelProviderFactory : IValueProviderFactory
+public class FormGetModelProviderFactory : IValueProviderFactory
 {
-	public class FileGetModelProvider : IGetModelProvider, IValueProvider // IValueProvider for compatibility reasons
+	public class FormGetModelProvider : IGetModelProvider, IValueProvider // IValueProvider for compatibility reasons
 	{
 		private readonly JsonSerializerOptions? jsonSerializerOptions;
 		private readonly IFormCollection? form;
 
-		public FileGetModelProvider(IFormCollection form, JsonSerializerOptions? options)
+		public FormGetModelProvider(IFormCollection form, JsonSerializerOptions? options)
 		{
 			this.jsonSerializerOptions = options;
 
@@ -28,10 +29,16 @@ public class FileGetModelProviderFactory : IValueProviderFactory
 
 		public bool ContainsPrefix(string prefix)
 		{
-			if (this.form == null || this.form.Files == null)
+			if (this.form == null)
 				return false;
 
-			return this.form.Files.Any(x => x.Name == prefix);
+			if (this.form.ContainsKey(prefix))
+				return true;
+
+			if(this.form.Files != null)
+				return this.form.Files.Any(x => x.Name == prefix);
+
+			return false;
 		}
 
 		/// <summary>
@@ -42,11 +49,21 @@ public class FileGetModelProviderFactory : IValueProviderFactory
 		/// <returns>null or object model of type</returns>
 		public object? GetModel(string key, Type t)
 		{
-			if (this.form != null && this.form.Files != null)
+			if (this.form == null)
+				return null;
+
+			if (this.form.ContainsKey(key))
 			{
-				var file = this.form.Files.FirstOrDefault(x => x.Name == key);
-				return file;
+				var model = TypeDescriptor.GetConverter(t).ConvertFrom(
+				   context: null,
+				   culture: System.Globalization.CultureInfo.InvariantCulture,
+				   value: this.form[key][0]); // Needs some tweaking
+				return model;
 			}
+
+			if(this.form.Files != null && t == typeof(IFormFile))
+				return this.form.Files.FirstOrDefault(x => x.Name == key);
+
 			return null;
 		}
 
@@ -76,7 +93,7 @@ public class FileGetModelProviderFactory : IValueProviderFactory
 				{
 					var form = await request.ReadFormAsync();
 					
-					context.ValueProviders.Add(new FileGetModelProvider(form, options));
+					context.ValueProviders.Add(new FormGetModelProvider(form, options));
 				}
 			}
 		}
@@ -94,12 +111,12 @@ public class FileGetModelProviderFactory : IValueProviderFactory
 
 		return AddValueProviderAsync(context, this.jsonSerializerOptions);
 	}
-	public FileGetModelProviderFactory(JsonSerializerOptions Options) : base()
+	public FormGetModelProviderFactory(JsonSerializerOptions Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
 
-	public FileGetModelProviderFactory()
+	public FormGetModelProviderFactory()
 	{
 		this.jsonSerializerOptions = null;
 	}

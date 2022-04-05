@@ -252,10 +252,11 @@ function StartUpload(e)
 
 	var formData = new FormData();
 
-	formData.append("file", file, file.name);
+ 	formData.append("file", file, file.name);
+	formData.append("Form1", "Value1"); // some extra Form data
 
 	netproxy("/api/Upload", formData, function ()
 	{
-		$id("Result").innerText = 'Ready';
+		$id("Result").innerText = 'Ready Length:' + this.Length + " ExtraValue:" + this.Form1;
 	}, window.NetProxyErrorHandler, ProgressHandler);
 }
