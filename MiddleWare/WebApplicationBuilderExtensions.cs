@@ -28,21 +28,27 @@ public static class MvcCoreCorrectedExtensions
 			options.ModelBinderProviders.Clear();
 			options.OutputFormatters.Clear();
 
+			// Reading Json POST providing models for a binder
+			options.ValueProviderFactories.Add(new JsonGetModelProviderFactory(new JsonSerializerOptions()
+			{
+				NumberHandling = JsonNumberHandling.AllowReadingFromString
+			}));
+
+			// Generic binder gettings complete de-serialized models of ModelProvider
+			options.ModelBinderProviders.Insert(0, new GenericModelBinderProvider());
+
+
+			// Correct Json output formatting
 			var jsonSerializerOptions = new JsonSerializerOptions()
 			{
 				DictionaryKeyPolicy = null,
 				PropertyNamingPolicy = null
 			};
 
-			if(CorrectDateTime)
+			if (CorrectDateTime)
 				jsonSerializerOptions.Converters.Add(new DateTimeConverter());
 
 			options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(jsonSerializerOptions));
-			options.ModelBinderProviders.Insert(0, new GenericModelBinderProvider());
-			options.ValueProviderFactories.Add(new JsonGetModelProviderFactory(new JsonSerializerOptions()
-			{
-				NumberHandling = JsonNumberHandling.AllowReadingFromString
-			}));
 		});
 	}
 
