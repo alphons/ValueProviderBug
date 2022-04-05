@@ -48,7 +48,8 @@ public class GetModelProvider : IGetModelProvider, IValueProvider // IValueProvi
 		if (jsonDocument != null)
 		{
 			var prop = jsonDocument.RootElement.GetProperty(key);
-			if (prop.ValueKind != JsonValueKind.Array || t.IsArray || t.GetGenericTypeDefinition() == typeof(List<>))
+			// this needs some tweaking!!!
+			if (prop.ValueKind != JsonValueKind.Array || t.IsArray || (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>)))
 			{
 				return prop.Deserialize(t, jsonSerializerOptions);
 			}

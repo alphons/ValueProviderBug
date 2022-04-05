@@ -23,8 +23,12 @@ public class HeaderGetModelProviderFactory : IValueProviderFactory
 			await Task.Yield();
 
 			var request = context.ActionContext.HttpContext.Request;
-			var jsonString = JsonSerializer.Serialize(request.Headers);
-			var jsonDocument = JsonDocument.Parse(jsonString, options: default);
+			var json = JsonSerializer.Serialize(request.Headers);
+
+			//var list = request.Headers.Select(x => $"\"{x.Key}\": \"{x.Value[0]}\"").ToArray();
+			//var json = $"{{{string.Join(',', list)}}}";
+
+			var jsonDocument = JsonDocument.Parse(json, options: default);
 
 			context.ValueProviders.Add(new GetModelProvider(jsonDocument, options));
 		}

@@ -50,7 +50,7 @@ namespace CoreBasic.Web.LogicControllers
 		public async Task<IActionResult> ComplexTest2(
 			[FromHeader(Name ="Referer")] string SomeParameter1,
 			[FromRoute] string SomeParameter2,
-			[FromRoute] string SomeParameter3,
+			[FromQuery] string SomeParameter3,
 			[FromBody] ApiModel SomeParameter4,
 			[FromBody] string SomeParameter5)
 		{

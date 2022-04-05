@@ -73,7 +73,7 @@ async function UnitTest()
 
 	r = await NetproxyAsync("./api/ComplexTest2/two?SomeParameter3=three",
 		{
-			"SomeParameter4": // Not the beast has a name
+			"SomeParameter4": // Now the beast has a name
 			{
 				Name: "My Name is",
 				"Users":
@@ -83,7 +83,7 @@ async function UnitTest()
 						[{ Name: "User20" }, { Name: "User21" }]
 					]
 			},
-			"SomeParameter5" : "Yes you can"
+			"SomeParameter5" : "Yes you can" // double binder
 		});
 
 	r = await NetproxyAsync("./api/ComplexDouble", { F: 123.456 });
