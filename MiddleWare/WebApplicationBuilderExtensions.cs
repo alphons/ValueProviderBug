@@ -35,8 +35,7 @@ public static class MvcCoreCorrectedExtensions
 			}));
 
 			// Generic binder gettings complete de-serialized models of ModelProvider
-			options.ModelBinderProviders.Insert(0, new GenericModelBinderProvider());
-
+			options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 
 			// Correct Json output formatting
 			var jsonSerializerOptions = new JsonSerializerOptions()
