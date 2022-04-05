@@ -6,8 +6,9 @@
 #nullable enable
 
 using System.Runtime.ExceptionServices;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Microsoft.AspNetCore.Mvc.ModelBinding;
+namespace Alternative.DependencyInjection;
 
 public interface IGetModelProvider
 {

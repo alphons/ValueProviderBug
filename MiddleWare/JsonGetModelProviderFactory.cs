@@ -7,7 +7,9 @@ using System.Diagnostics;
 
 using System.Text.Json;
 
-namespace Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace Alternative.DependencyInjection;
 
 #nullable enable
 

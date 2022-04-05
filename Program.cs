@@ -1,25 +1,9 @@
 
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Alternative.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder();
 
-var services = builder.Services;
-
-builder.Services.AddMvcCore().AddMvcOptions(options =>
-{
-	options.ModelBinderProviders.Insert(0, new GenericModelBinderProvider());
-	options.ValueProviderFactories.Add(new JsonGetModelProviderFactory(new JsonSerializerOptions()
-	{
-		NumberHandling = JsonNumberHandling.AllowReadingFromString
-	}));
-}).AddJsonOptions(options =>
-{
-	options.JsonSerializerOptions.DictionaryKeyPolicy = null;
-	options.JsonSerializerOptions.PropertyNamingPolicy = null;					
-});
+builder.Services.AddMvcCoreCorrected();
 
 var app = builder.Build();
 
