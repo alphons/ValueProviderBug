@@ -1,10 +1,11 @@
 ﻿// GenericModelBinderProvider, GenericModelBinder
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-04
-// Version: 1.0
+// Date: 2022-04-05
+// Version: 1.1
 
 #nullable enable
 
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -36,19 +37,25 @@ public class GenericModelBinder : IModelBinder
 	public Task BindModelAsync(ModelBindingContext bindingContext)
 	{
 		if (bindingContext == null)
-			throw new ArgumentNullException(nameof(bindingContext));
+			throw new ArgumentNullException(nameof(ModelBindingContext));
 
-		var compositeValueProvider = bindingContext.ValueProvider as CompositeValueProvider;
+		var defaultContext = bindingContext as DefaultModelBindingContext;
+		if(defaultContext == null)
+			throw new ArgumentNullException(nameof(DefaultModelBindingContext));
 
+		var compositeValueProvider = defaultContext.OriginalValueProvider as CompositeValueProvider;
 		if (compositeValueProvider == null)
-			throw new ArgumentNullException(nameof(compositeValueProvider));
+			throw new ArgumentNullException(nameof(CompositeValueProvider));
 
-		if (compositeValueProvider.FirstOrDefault(x => x is IGetModelProvider) is not IGetModelProvider getModelProvider)
-			throw new ArgumentNullException(nameof(getModelProvider));
+		if (compositeValueProvider.FirstOrDefault(x => x is IGetModelProvider provider && provider.ContainsPrefix(defaultContext.OriginalModelName)) is not IGetModelProvider getModelProvider)
+		{
+			Debug.WriteLine($"Bind failed on: {defaultContext.OriginalModelName}");
+			return Task.CompletedTask; // Failed
+		}
 
 		try
 		{
-			var model = getModelProvider.GetModel(bindingContext.ModelName, this.type);
+			var model = getModelProvider.GetModel(defaultContext.OriginalModelName, this.type);
 
 			bindingContext.Result = ModelBindingResult.Success(model);
 

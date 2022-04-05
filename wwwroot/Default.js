@@ -58,10 +58,38 @@ async function UnitTest()
 	result.innerText = '';
 	var r;
 
+	// The body name does not matter in the old valueproviders / binders
+	//r = await NetproxyAsync("./api/ComplexTest/two?SomeParameter3=three",
+	//	{
+	//		Name: "My Name is",
+	//		"Users":
+	//			[
+	//				[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
+	//				[{ Name: "User10" }, { Name: "User11" }],
+	//				[{ Name: "User20" }, { Name: "User21" }]
+	//			]
+	//	});
+
+
+	r = await NetproxyAsync("./api/ComplexTest2/two?SomeParameter3=three",
+		{
+			"SomeParameter4": // Not the beast has a name
+			{
+				Name: "My Name is",
+				"Users":
+					[
+						[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
+						[{ Name: "User10" }, { Name: "User11" }],
+						[{ Name: "User20" }, { Name: "User21" }]
+					]
+			},
+			"SomeParameter5" : "Yes you can"
+		});
+
 	r = await NetproxyAsync("./api/ComplexDouble", { F: 123.456 });
 	C("ComplexDouble", r.F, 123.456);
 
-	r = await NetproxyAsync("./api/ComplexDouble", { F: '123.456' }); // JsonNumberHandling.AllowReadingFromString
+	r = await NetproxyAsync("./api/ComplexDouble", { F: '123.456' }); // Needs JsonNumberHandling.AllowReadingFromString
 	C("ComplexDouble", r.F, 123.456);
 
 	r = await NetproxyAsync("./api/ComplexSingleObject", { AA: { a: 'aaa', b: 'bbb' } });

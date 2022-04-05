@@ -28,11 +28,12 @@ public static class MvcCoreCorrectedExtensions
 			options.ModelBinderProviders.Clear();
 			options.OutputFormatters.Clear();
 
-			// Reading Json POST providing models for a binder
-			options.ValueProviderFactories.Add(new JsonGetModelProviderFactory(new JsonSerializerOptions()
-			{
-				NumberHandling = JsonNumberHandling.AllowReadingFromString
-			}));
+			var jsonOptions = new JsonSerializerOptions() { NumberHandling = JsonNumberHandling.AllowReadingFromString };
+			// Reading Json POST, Query, Header and Route providing models for a binder
+			options.ValueProviderFactories.Add(new JsonGetModelProviderFactory(jsonOptions));
+			options.ValueProviderFactories.Add(new QueryGetModelProviderFactory());
+			options.ValueProviderFactories.Add(new HeaderGetModelProviderFactory());
+			options.ValueProviderFactories.Add(new RouteGetModelProviderFactory());
 
 			// Generic binder gettings complete de-serialized models of ModelProvider
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());

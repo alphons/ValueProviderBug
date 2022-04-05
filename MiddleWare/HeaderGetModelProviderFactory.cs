@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Alternative.DependencyInjection;
 
 #nullable enable
-public class JsonGetModelProviderFactory : IValueProviderFactory
+public class HeaderGetModelProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
@@ -20,20 +20,13 @@ public class JsonGetModelProviderFactory : IValueProviderFactory
 	{
 		try
 		{
-			var request = context.ActionContext.HttpContext.Request;
-			if (request.Method == "POST")
-			{
-				if (request.ContentType == null || request.ContentType.StartsWith("application/json"))
-				{
-					if (request.ContentLength == null || // Chunked encoding
-						request.ContentLength >= 2) // Normal encoding, using content length minimum '{}'
-					{
-						var jsonDocument = await JsonDocument.ParseAsync(request.Body);
+			await Task.Yield();
 
-						context.ValueProviders.Add(new GetModelProvider(jsonDocument, options));
-					}
-				}
-			}
+			var request = context.ActionContext.HttpContext.Request;
+			var jsonString = JsonSerializer.Serialize(request.Headers);
+			var jsonDocument = JsonDocument.Parse(jsonString, options: default);
+
+			context.ValueProviders.Add(new GetModelProvider(jsonDocument, options));
 		}
 		catch (Exception eee)
 		{
@@ -49,12 +42,12 @@ public class JsonGetModelProviderFactory : IValueProviderFactory
 
 		return AddValueProviderAsync(context, this.jsonSerializerOptions);
 	}
-	public JsonGetModelProviderFactory(JsonSerializerOptions Options) : base()
+	public HeaderGetModelProviderFactory(JsonSerializerOptions Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
 
-	public JsonGetModelProviderFactory()
+	public HeaderGetModelProviderFactory()
 	{
 		this.jsonSerializerOptions = null;
 	}

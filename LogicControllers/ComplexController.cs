@@ -5,6 +5,64 @@ namespace CoreBasic.Web.LogicControllers
 {
 	public class ComplexController : ControllerBase
 	{
+
+		public class DoesNotWorkModel
+		{
+			[FromHeader(Name="referer")]
+			public string SomeParameter1 { get; set; }
+
+			[FromRoute]
+			public string SomeParameter2 { get; set; }
+
+			[FromQuery]
+			public string SomeParameter3 { get; set; }
+
+			[FromBody]
+			public string SomeParameter4 { get; set; } // Does not work
+		}
+
+
+		public class ApiModel
+		{
+			public string Name { get; set; }
+			public List<List<Usert>> Users { get; set; }
+		}
+
+
+		[HttpPost]
+		[Route("~/api/ComplexTest/{SomeParameter2}")]
+		public async Task<IActionResult> ComplexTest(
+			[FromHeader(Name = "referer")] string SomeParameter1, 
+			[FromRoute] string SomeParameter2, 
+			[FromQuery] string SomeParameter3, 
+			[FromBody] ApiModel SomeParameter4)
+		{
+			await Task.Yield();
+
+			return Ok(new
+			{
+
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexTest2/{SomeParameter2}")]
+		public async Task<IActionResult> ComplexTest2(
+			[FromHeader(Name ="Referer")] string SomeParameter1,
+			[FromRoute] string SomeParameter2,
+			[FromRoute] string SomeParameter3,
+			[FromBody] ApiModel SomeParameter4,
+			[FromBody] string SomeParameter5)
+		{
+			await Task.Yield();
+
+			return Ok(new
+			{
+
+			});
+		}
+
+
 		[HttpPost]
 		[Route("~/api/ComplexString")]
 		public async Task<IActionResult> ComplexString(string Name)

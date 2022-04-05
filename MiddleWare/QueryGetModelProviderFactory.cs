@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 
 // JsonModelProviderFactory, JsonModelProvider
 // (C) 2022 Alphons van der Heijden
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Alternative.DependencyInjection;
 
 #nullable enable
-public class JsonGetModelProviderFactory : IValueProviderFactory
+public class QueryGetModelProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
@@ -20,20 +21,14 @@ public class JsonGetModelProviderFactory : IValueProviderFactory
 	{
 		try
 		{
-			var request = context.ActionContext.HttpContext.Request;
-			if (request.Method == "POST")
-			{
-				if (request.ContentType == null || request.ContentType.StartsWith("application/json"))
-				{
-					if (request.ContentLength == null || // Chunked encoding
-						request.ContentLength >= 2) // Normal encoding, using content length minimum '{}'
-					{
-						var jsonDocument = await JsonDocument.ParseAsync(request.Body);
+			await Task.Yield();
 
-						context.ValueProviders.Add(new GetModelProvider(jsonDocument, options));
-					}
-				}
-			}
+			var request = context.ActionContext.HttpContext.Request;
+			var list = request.Query.Select(x => $"\"{x.Key}\": \"{x.Value}\"").ToArray();
+			var json = $"{{{string.Join(',', list)}}}";
+			var jsonDocument = JsonDocument.Parse(json, options: default);
+
+			context.ValueProviders.Add(new GetModelProvider(jsonDocument, options));
 		}
 		catch (Exception eee)
 		{
@@ -49,12 +44,12 @@ public class JsonGetModelProviderFactory : IValueProviderFactory
 
 		return AddValueProviderAsync(context, this.jsonSerializerOptions);
 	}
-	public JsonGetModelProviderFactory(JsonSerializerOptions Options) : base()
+	public QueryGetModelProviderFactory(JsonSerializerOptions Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
 
-	public JsonGetModelProviderFactory()
+	public QueryGetModelProviderFactory()
 	{
 		this.jsonSerializerOptions = null;
 	}
