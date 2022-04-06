@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Alternative.DependencyInjection;
 
 #nullable enable
+
+
 public class HeaderGetModelProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;

@@ -14,19 +14,19 @@ namespace Alternative.DependencyInjection;
 
 #nullable enable
 
-public class GetModelProvider : IGetModelProvider, IValueProvider // IValueProvider for compatibility reasons
+public class GetModelProvider : BindingGetModelProvider
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 	private readonly JsonDocument? jsonDocument;
 
-	public GetModelProvider(JsonDocument? jsonDocument, JsonSerializerOptions? options)
+	public GetModelProvider(BindingSource bindingSource, JsonDocument? jsonDocument, JsonSerializerOptions? options) : base(bindingSource)
 	{
 		this.jsonSerializerOptions = options;
 
 		this.jsonDocument = jsonDocument;
 	}
 
-	public bool ContainsPrefix(string prefix)
+	public override bool ContainsPrefix(string prefix)
 	{
 		if (jsonDocument == null)
 			return false;
@@ -63,16 +63,6 @@ public class GetModelProvider : IGetModelProvider, IValueProvider // IValueProvi
 		return null;
 	}
 
-	/// <summary>
-	/// Obsolete, use GetModel instead
-	/// </summary>
-	/// <param name="key"></param>
-	/// <returns></returns>
-	[Obsolete("Use GetModel")]
-	public ValueProviderResult GetValue(string key)
-	{
-		return ValueProviderResult.None;
-	}
 }
 
 

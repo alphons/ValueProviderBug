@@ -11,10 +11,15 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Alternative.DependencyInjection;
 
-public interface IGetModelProvider
+
+public interface IBindingGetModelProvider : IGetModelProvider
+{
+	IGetModelProvider? Filter(BindingSource bindingSource);
+}
+
+public interface IGetModelProvider : IValueProvider
 {
 	object? GetModel(string key, Type t);
-	bool ContainsPrefix(string prefix);
 }
 
 
@@ -47,6 +52,7 @@ public class GenericModelBinder : IModelBinder
 		if (compositeValueProvider == null)
 			throw new ArgumentNullException(nameof(CompositeValueProvider));
 
+		// TODO: If Attribute is set, only search for appropriate providers
 		if (compositeValueProvider.FirstOrDefault(x => x is IGetModelProvider provider && provider.ContainsPrefix(defaultContext.OriginalModelName)) is not IGetModelProvider getModelProvider)
 		{
 			Debug.WriteLine($"Bind failed on: {defaultContext.OriginalModelName}");
