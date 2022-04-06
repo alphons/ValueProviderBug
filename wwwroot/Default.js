@@ -23,6 +23,7 @@ function PageEvents()
 function Init()
 {
 	result = $id('Result');
+	netproxy("./api/HelloWorld");
 }
 
 async function ShowBugs() //dont use this!
@@ -67,13 +68,12 @@ async function UnitTest()
 	//				[{ Name: "User20" }, { Name: "User21" }]
 	//			]
 	//	});
-	r = await netproxyasync("./api/ComplexString", { Name: 'This is a test' });
 
 	r = await netproxyasync("./api/ComplexTest2/two?SomeParameter3=three",
 		{
 			"SomeParameter4": // Now the beast has a name
 			{
-				Name: "My Name is",
+				Name: "four",
 				"Users":
 					[
 						[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
@@ -81,7 +81,7 @@ async function UnitTest()
 						[{ Name: "User20" }, { Name: "User21" }]
 					]
 			},
-			"SomeParameter5" : "Yes you can" // double binder
+			"SomeParameter5" : "five" // double binder
 		});
 
 	r = await netproxyasync("./api/ComplexDouble", { F: 123.456 });

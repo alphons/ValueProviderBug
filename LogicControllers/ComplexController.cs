@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using Heijden.AspNetCore.Mvc.ModelBinding;
 
 namespace CoreBasic.Web.LogicControllers
 {
@@ -10,12 +11,27 @@ namespace CoreBasic.Web.LogicControllers
 		{
 			public string Name { get; set; }
 			public List<List<Usert>> Users { get; set; }
+
+			public override string ToString() => Name;
 		}
+
+
+		[HttpGet]
+		[Route("~/api/HelloWorld")]
+		public async Task<IActionResult> HelloWorld()
+		{
+			HttpContext.Session.SetString("Hello", "World");
+			await HttpContext.Session.CommitAsync();
+
+			return Ok();
+		}
+
 
 		[HttpPost]
 		[Route("~/api/ComplexTest2/{SomeParameter2}")]
 		public async Task<IActionResult> ComplexTest2(
-			[FromHeader(Name ="Referer")] string SomeParameter1,
+			[FromCooky(Name = ".AspNetCore.Session")] string SomeParameter0,
+			[FromHeader(Name = "Referer")] string SomeParameter1,
 			[FromRoute] string SomeParameter2,
 			[FromQuery] string SomeParameter3,
 			[FromBody] ApiModel SomeParameter4,

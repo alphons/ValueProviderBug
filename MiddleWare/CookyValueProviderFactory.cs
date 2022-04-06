@@ -1,13 +1,11 @@
-using System.Diagnostics;
-using System.Text;
 
-// JsonModelProviderFactory, JsonModelProvider
+// CookyValueProviderFactory
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-04
-// Version: 1.0
+// Date: 2022-04-06
+// Version: 1.1
 
 using System.Text.Json;
-using Heijden.AspNetCore.Mvc.ModelBinding;
+
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Heijden.AspNetCore.Mvc.ModelBinding;
@@ -17,34 +15,32 @@ public class CookyValueProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
-	private static async Task AddValueProviderAsync(ValueProviderFactoryContext context, JsonSerializerOptions? options)
-	{
-		try
-		{
-			await Task.Yield();
+    public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
+    {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+        var cookies = context.ActionContext.HttpContext.Request.Cookies;
+        if (cookies != null && cookies.Count > 0)
+        {
+            var list = cookies.Select(x => $"\"{x.Key}\": \"{x.Value}\"").ToArray();
+            var json = $"{{{string.Join(',', list)}}}";
+            var jsonDocument = JsonDocument.Parse(json, options: default);
 
-			var request = context.ActionContext.HttpContext.Request;
-			var list = request.Cookies.Select(x => $"\"{x.Key}\": \"{x.Value}\"").ToArray();
-			var json = $"{{{string.Join(',', list)}}}";
-			var jsonDocument = JsonDocument.Parse(json, options: default);
+            var valueProvider = new GenericValueProvider(
+                BindingSource.Special,
+                jsonDocument,
+                null,
+                jsonSerializerOptions);
 
-			context.ValueProviders.Add(new GenericValueProvider(BindingSource.Special, jsonDocument, null, options));
-		}
-		catch (Exception eee)
-		{
-			// Not valid json, dont bother
-			Debug.WriteLine(eee.Message);
-		}
-	}
+            context.ValueProviders.Add(valueProvider);
+        }
 
-	Task IValueProviderFactory.CreateValueProviderAsync(ValueProviderFactoryContext context)
-	{
-		if (context == null)
-			throw new ArgumentNullException(nameof(context));
+        return Task.CompletedTask;
+    }
 
-		return AddValueProviderAsync(context, this.jsonSerializerOptions);
-	}
-	public CookyValueProviderFactory(JsonSerializerOptions Options) : base()
+	public CookyValueProviderFactory(JsonSerializerOptions Options)
 	{
 		this.jsonSerializerOptions = Options;
 	}

@@ -1,9 +1,8 @@
-using System.Diagnostics;
 
-// JsonModelProviderFactory, JsonModelProvider
+// HeaderValueProviderFactory
 // (C) 2022 Alphons van der Heijden
-// Date: 2022-04-04
-// Version: 1.0
+// Date: 2022-04-06
+// Version: 1.1
 
 using System.Text.Json;
 
@@ -13,42 +12,40 @@ namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
 
-
 public class HeaderValueProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
-	private static async Task AddValueProviderAsync(ValueProviderFactoryContext context, JsonSerializerOptions? options)
+	public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
 	{
-		try
+		if (context == null)
 		{
-			await Task.Yield();
+			throw new ArgumentNullException(nameof(context));
+		}
 
-			var request = context.ActionContext.HttpContext.Request;
-			var json = JsonSerializer.Serialize(request.Headers);
+		var headers = context.ActionContext.HttpContext.Request.Headers;
+		if (headers != null && headers.Count > 0)
+		{
+			var json = JsonSerializer.Serialize(headers);
 
 			//var list = request.Headers.Select(x => $"\"{x.Key}\": \"{x.Value[0]}\"").ToArray();
 			//var json = $"{{{string.Join(',', list)}}}";
 
 			var jsonDocument = JsonDocument.Parse(json, options: default);
 
-			context.ValueProviders.Add(new GenericValueProvider(BindingSource.Header, jsonDocument, null, options));
+			var valueProvider = new GenericValueProvider(
+				BindingSource.Header,
+				jsonDocument,
+				null,
+				jsonSerializerOptions);
+
+			context.ValueProviders.Add(valueProvider);
 		}
-		catch (Exception eee)
-		{
-			// Not valid json, dont bother
-			Debug.WriteLine(eee.Message);
-		}
+
+		return Task.CompletedTask;
 	}
 
-	Task IValueProviderFactory.CreateValueProviderAsync(ValueProviderFactoryContext context)
-	{
-		if (context == null)
-			throw new ArgumentNullException(nameof(context));
-
-		return AddValueProviderAsync(context, this.jsonSerializerOptions);
-	}
-	public HeaderValueProviderFactory(JsonSerializerOptions Options) : base()
+	public HeaderValueProviderFactory(JsonSerializerOptions Options)
 	{
 		this.jsonSerializerOptions = Options;
 	}
@@ -57,7 +54,6 @@ public class HeaderValueProviderFactory : IValueProviderFactory
 	{
 		this.jsonSerializerOptions = null;
 	}
-
 }
 
 
