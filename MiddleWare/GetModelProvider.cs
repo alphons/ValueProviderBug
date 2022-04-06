@@ -43,7 +43,7 @@ public class GetModelProvider : BindingGetModelProvider
 	/// <param name="key">name of the model</param>
 	/// <param name="t">type of the model</param>
 	/// <returns>null or object model of type</returns>
-	public object? GetModel(string key, Type t)
+	public override object? GetModel(string key, Type t)
 	{
 		if (jsonDocument != null)
 		{

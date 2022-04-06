@@ -52,8 +52,12 @@ public class GenericModelBinder : IModelBinder
 		if (compositeValueProvider == null)
 			throw new ArgumentNullException(nameof(CompositeValueProvider));
 
-		// TODO: If Attribute is set, only search for appropriate providers
-		if (compositeValueProvider.FirstOrDefault(x => x is IGetModelProvider provider && provider.ContainsPrefix(defaultContext.OriginalModelName)) is not IGetModelProvider getModelProvider)
+		var iBindingGetModelProviders = compositeValueProvider
+			.Where(x => x is IBindingGetModelProvider provider && (bindingContext.BindingSource == null || provider.Filter(bindingContext.BindingSource) != null))
+			.Select(x => x as IBindingGetModelProvider)
+			.ToList();
+
+		if (iBindingGetModelProviders.FirstOrDefault(x => x != null && x.ContainsPrefix(defaultContext.OriginalModelName)) is not IGetModelProvider getModelProvider)
 		{
 			Debug.WriteLine($"Bind failed on: {defaultContext.OriginalModelName}");
 			return Task.CompletedTask; // Failed

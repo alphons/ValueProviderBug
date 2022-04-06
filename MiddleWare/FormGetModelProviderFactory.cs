@@ -15,19 +15,19 @@ namespace Alternative.DependencyInjection;
 #nullable enable
 public class FormGetModelProviderFactory : IValueProviderFactory
 {
-	public class FormGetModelProvider : IGetModelProvider, IValueProvider // IValueProvider for compatibility reasons
+	public class FormGetModelProvider : BindingGetModelProvider
 	{
 		private readonly JsonSerializerOptions? jsonSerializerOptions;
 		private readonly IFormCollection? form;
 
-		public FormGetModelProvider(IFormCollection form, JsonSerializerOptions? options)
+		public FormGetModelProvider(BindingSource bindingSource, IFormCollection form, JsonSerializerOptions? options) : base(bindingSource)
 		{
 			this.jsonSerializerOptions = options;
 
 			this.form = form;
 		}
 
-		public bool ContainsPrefix(string prefix)
+		public override bool ContainsPrefix(string prefix)
 		{
 			if (this.form == null)
 				return false;
@@ -47,7 +47,7 @@ public class FormGetModelProviderFactory : IValueProviderFactory
 		/// <param name="key">name of the model</param>
 		/// <param name="t">type of the model</param>
 		/// <returns>null or object model of type</returns>
-		public object? GetModel(string key, Type t)
+		public override object? GetModel(string key, Type t)
 		{
 			if (this.form == null)
 				return null;
@@ -66,17 +66,6 @@ public class FormGetModelProviderFactory : IValueProviderFactory
 
 			return null;
 		}
-
-		/// <summary>
-		/// Obsolete, use GetModel instead
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		[Obsolete("Use GetModel")]
-		public ValueProviderResult GetValue(string key)
-		{
-			return ValueProviderResult.None;
-		}
 	}
 
 
@@ -93,7 +82,7 @@ public class FormGetModelProviderFactory : IValueProviderFactory
 				{
 					var form = await request.ReadFormAsync();
 					
-					context.ValueProviders.Add(new FormGetModelProvider(form, options));
+					context.ValueProviders.Add(new FormGetModelProvider(BindingSource.Form, form, options));
 				}
 			}
 		}

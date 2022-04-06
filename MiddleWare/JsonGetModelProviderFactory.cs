@@ -30,7 +30,7 @@ public class JsonGetModelProviderFactory : IValueProviderFactory
 					{
 						var jsonDocument = await JsonDocument.ParseAsync(request.Body);
 
-						context.ValueProviders.Add(new GetModelProvider(jsonDocument, options));
+						context.ValueProviders.Add(new GetModelProvider(BindingSource.Body, jsonDocument, options));
 					}
 				}
 			}

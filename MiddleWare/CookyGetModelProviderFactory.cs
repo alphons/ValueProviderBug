@@ -28,7 +28,7 @@ public class CookyGetModelProviderFactory : IValueProviderFactory
 			var json = $"{{{string.Join(',', list)}}}";
 			var jsonDocument = JsonDocument.Parse(json, options: default);
 
-			context.ValueProviders.Add(new GetModelProvider(jsonDocument, options));
+			context.ValueProviders.Add(new GetModelProvider(BindingSource.Special, jsonDocument, options));
 		}
 		catch (Exception eee)
 		{

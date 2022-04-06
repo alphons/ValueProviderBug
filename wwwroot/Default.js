@@ -67,7 +67,7 @@ async function UnitTest()
 	//				[{ Name: "User20" }, { Name: "User21" }]
 	//			]
 	//	});
-
+	r = await netproxyasync("./api/ComplexString", { Name: 'This is a test' });
 
 	r = await netproxyasync("./api/ComplexTest2/two?SomeParameter3=three",
 		{
