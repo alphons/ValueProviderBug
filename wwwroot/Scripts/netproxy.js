@@ -3,7 +3,7 @@
  *	@name		pure-dom netproxy and template and api
  * 
  *	@author     Alphons van der Heijden <alphons@heijden.com>
- *	@version    0.2.7 (last revision Nov, 2021)
+ *	@version    0.2.8 (last revision Apr, 2022)
  *	@copyright  (c) 2019-2021 Alphons van der Heijden
  *	@license    LGPL-3.0
  *	@alias      netproxy
@@ -122,6 +122,14 @@
 			httpRequest.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 		httpRequest.send(defaults.data);
 		return this;
+	};
+
+	window.netproxyasync = function (url, data, onprogress)
+	{
+		return new Promise((resolve, reject) =>
+		{
+			netproxy(url, data, resolve, reject, onprogress);
+		});
 	};
 
 	Element.prototype.Template = function (template, data, append)

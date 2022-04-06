@@ -27,18 +27,11 @@ function Init()
 
 async function ShowBugs() //dont use this!
 {
-	r = await NetproxyAsync("./api/ComplexListOfStrings", {});
-	r = await NetproxyAsync("./api/ComplexListOfInts", {});
-	r = await NetproxyAsync("./api/ComplexArray", {});
+	r = await netproxyasync("./api/ComplexListOfStrings", {});
+	r = await netproxyasync("./api/ComplexListOfInts", {});
+	r = await netproxyasync("./api/ComplexArray", {});
 }
 
-function NetproxyAsync(url, data)
-{
-	return new Promise((resolve, reject) =>
-	{
-		netproxy(url, data, resolve, reject );
-	});
-}
 
 var nnn;
 var intNnn;
@@ -64,7 +57,7 @@ async function UnitTest()
 	var r;
 
 	// The body name does not matter in the old valueproviders / binders
-	//r = await NetproxyAsync("./api/ComplexTest/two?SomeParameter3=three",
+	//r = await netproxyasync("./api/ComplexTest/two?SomeParameter3=three",
 	//	{
 	//		Name: "My Name is",
 	//		"Users":
@@ -76,7 +69,7 @@ async function UnitTest()
 	//	});
 
 
-	r = await NetproxyAsync("./api/ComplexTest2/two?SomeParameter3=three",
+	r = await netproxyasync("./api/ComplexTest2/two?SomeParameter3=three",
 		{
 			"SomeParameter4": // Now the beast has a name
 			{
@@ -91,38 +84,38 @@ async function UnitTest()
 			"SomeParameter5" : "Yes you can" // double binder
 		});
 
-	r = await NetproxyAsync("./api/ComplexDouble", { F: 123.456 });
+	r = await netproxyasync("./api/ComplexDouble", { F: 123.456 });
 	C("ComplexDouble", r.F, 123.456);
 
-	r = await NetproxyAsync("./api/ComplexDouble", { F: '123.456' }); // Needs JsonNumberHandling.AllowReadingFromString
+	r = await netproxyasync("./api/ComplexDouble", { F: '123.456' }); // Needs JsonNumberHandling.AllowReadingFromString
 	C("ComplexDouble", r.F, 123.456);
 
-	r = await NetproxyAsync("./api/ComplexSingleObject", { AA: { a: 'aaa', b: 'bbb' } });
+	r = await netproxyasync("./api/ComplexSingleObject", { AA: { a: 'aaa', b: 'bbb' } });
 	C("ComplexSingleObject", r.AA.a, 'aaa');
 	C("ComplexSingleObject", r.AA.b, 'bbb');
 
-	r = await NetproxyAsync("./api/ComplexString", { Name: 'This is a test' });
+	r = await netproxyasync("./api/ComplexString", { Name: 'This is a test' });
 	C("ComplexString", r.Name, 'This is a test');
 
-	r = await NetproxyAsync("./api/ComplexStringInt", { Name: 'This is a test', A : 123 });
+	r = await netproxyasync("./api/ComplexStringInt", { Name: 'This is a test', A : 123 });
 	C("ComplexStringInt", r.Name, 'This is a test');
 	C("ComplexStringInt", r.A, 123);
 
-	r = await NetproxyAsync("./api/ComplexListOfStrings", { ListOfStrings: ['a', '', 'b', null, 'c'] });
+	r = await netproxyasync("./api/ComplexListOfStrings", { ListOfStrings: ['a', '', 'b', null, 'c'] });
 	C("ComplexList", r.ListOfStrings[0], 'a');
 	C("ComplexList", r.ListOfStrings[1], '');
 	C("ComplexList", r.ListOfStrings[2], 'b');
 	C("ComplexList", r.ListOfStrings[3], null);
 	C("ComplexList", r.ListOfStrings[4], 'c');
 
-	r = await NetproxyAsync("./api/ComplexListOfInts", { ListOfInts: [ 0, 1 , 2, null , 4] });
+	r = await netproxyasync("./api/ComplexListOfInts", { ListOfInts: [ 0, 1 , 2, null , 4] });
 	C("ComplexListInt", r.ListOfInts[0], 0);
 	C("ComplexListInt", r.ListOfInts[1], 1);
 	C("ComplexListInt", r.ListOfInts[2], 2);
 	C("ComplexListInt", r.ListOfInts[3], null);
 	C("ComplexListInt", r.ListOfInts[4], 4);
 	
-	r = await NetproxyAsync("./api/ComplexArray", { list: [{ a: 'a', b: null }, null, { a: 'c', b: 'd' }] });
+	r = await netproxyasync("./api/ComplexArray", { list: [{ a: 'a', b: null }, null, { a: 'c', b: 'd' }] });
 	C("ComplexArray", r.list.length, 3);
 	if (r.list.length == 3)
 	{
@@ -136,7 +129,7 @@ async function UnitTest()
 		C("ComplexArray", r2.b, 'd');
 	}
 
-	r = await NetproxyAsync("./api/ComplexArrayArray",
+	r = await netproxyasync("./api/ComplexArrayArray",
 	{
 		Group: "groupy",
 		List:
@@ -171,7 +164,7 @@ async function UnitTest()
 		C("ComplexArrayArray", u[1], '3');
 	}
 
-	r = await NetproxyAsync("./api/ComplexArrayArrayClass",
+	r = await netproxyasync("./api/ComplexArrayArrayClass",
 		{
 			Testing: true,
 			Relaxed: false,
@@ -238,8 +231,7 @@ function ProgressHandler(event)
 	var total = event.total;
 	if (event.lengthComputable)
 		percent = Math.ceil(position / total * 100);
-	//console.log("ProgressHandler: Uploading " + percent + " %");
-	$id("PopTitle").innerText = "Uploading " + percent + "%";
+	$id("Result").innerText = "Uploading " + percent + "%";
 }
 
 function StartUpload(e)
