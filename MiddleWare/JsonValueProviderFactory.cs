@@ -9,12 +9,10 @@ using System.Text.Json;
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Alternative.DependencyInjection;
+namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
-
-
-public class HeaderGetModelProviderFactory : IValueProviderFactory
+public class JsonValueProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
@@ -22,17 +20,20 @@ public class HeaderGetModelProviderFactory : IValueProviderFactory
 	{
 		try
 		{
-			await Task.Yield();
-
 			var request = context.ActionContext.HttpContext.Request;
-			var json = JsonSerializer.Serialize(request.Headers);
+			if (request.Method == "POST")
+			{
+				if (request.ContentType == null || request.ContentType.StartsWith("application/json"))
+				{
+					if (request.ContentLength == null || // Chunked encoding
+						request.ContentLength >= 2) // Normal encoding, using content length minimum '{}'
+					{
+						var jsonDocument = await JsonDocument.ParseAsync(request.Body);
 
-			//var list = request.Headers.Select(x => $"\"{x.Key}\": \"{x.Value[0]}\"").ToArray();
-			//var json = $"{{{string.Join(',', list)}}}";
-
-			var jsonDocument = JsonDocument.Parse(json, options: default);
-
-			context.ValueProviders.Add(new GetModelProvider(BindingSource.Header, jsonDocument, null, options));
+						context.ValueProviders.Add(new GenericValueProvider(BindingSource.Body, jsonDocument, null, options));
+					}
+				}
+			}
 		}
 		catch (Exception eee)
 		{
@@ -48,12 +49,12 @@ public class HeaderGetModelProviderFactory : IValueProviderFactory
 
 		return AddValueProviderAsync(context, this.jsonSerializerOptions);
 	}
-	public HeaderGetModelProviderFactory(JsonSerializerOptions Options) : base()
+	public JsonValueProviderFactory(JsonSerializerOptions Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
 
-	public HeaderGetModelProviderFactory()
+	public JsonValueProviderFactory()
 	{
 		this.jsonSerializerOptions = null;
 	}

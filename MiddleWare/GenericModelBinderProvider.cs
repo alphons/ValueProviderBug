@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Alternative.DependencyInjection;
+namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
 
 public interface IBindingGetModelProvider : IGetModelProvider

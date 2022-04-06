@@ -1,11 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Alternative.DependencyInjection;
+namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
 
-public abstract class BindingGetModelProvider : IBindingGetModelProvider
+public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 {
 	/// <summary>
 	/// Creates a new <see cref="BindingGetModelProvider"/>.
@@ -14,7 +14,7 @@ public abstract class BindingGetModelProvider : IBindingGetModelProvider
 	/// The <see cref="ModelBinding.BindingSource"/>. Must be a single-source (non-composite) with
 	/// <see cref="ModelBinding.BindingSource.IsGreedy"/> equal to <c>false</c>.
 	/// </param>
-	public BindingGetModelProvider(BindingSource bindingSource)
+	public BindingSourceValueProvider(BindingSource bindingSource)
 	{
 		if (bindingSource == null)
 		{
@@ -32,16 +32,11 @@ public abstract class BindingGetModelProvider : IBindingGetModelProvider
 	/// <inheritdoc />
 	public abstract bool ContainsPrefix(string prefix);
 
-	public abstract object? GetModel(string key, Type t);
+	/// <inheritdoc />
+	public abstract ValueProviderResult GetValue(string key);
 
 	/// <inheritdoc />
-	public ValueProviderResult GetValue(string key)
-	{
-		return ValueProviderResult.None; // not used!!
-	}
-
-	/// <inheritdoc />
-	public virtual IGetModelProvider? Filter(BindingSource bindingSource)
+	public virtual IValueProvider? Filter(BindingSource bindingSource)
 	{
 		if (bindingSource == null)
 		{
@@ -50,12 +45,15 @@ public abstract class BindingGetModelProvider : IBindingGetModelProvider
 
 		if (bindingSource.CanAcceptDataFrom(BindingSource))
 		{
-			return (IGetModelProvider?)this;
+			return this;
 		}
 		else
 		{
 			return null;
 		}
 	}
+
+	public abstract object? GetModel(string key, Type t);
+
 }
 

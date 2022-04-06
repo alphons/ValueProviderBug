@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace Alternative.DependencyInjection;
+namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
 public static class MvcCoreCorrectedExtensions
 {
@@ -29,13 +29,17 @@ public static class MvcCoreCorrectedExtensions
 			options.OutputFormatters.Clear();
 
 			var jsonOptions = new JsonSerializerOptions() { NumberHandling = JsonNumberHandling.AllowReadingFromString };
-			// Reading Json POST, Query, Header and Route providing models for a binder
-			options.ValueProviderFactories.Add(new JsonGetModelProviderFactory(jsonOptions));
-			options.ValueProviderFactories.Add(new QueryGetModelProviderFactory());
-			options.ValueProviderFactories.Add(new HeaderGetModelProviderFactory());
-			options.ValueProviderFactories.Add(new RouteGetModelProviderFactory());
-			options.ValueProviderFactories.Add(new CookyGetModelProviderFactory());
-			options.ValueProviderFactories.Add(new FormGetModelProviderFactory()); // can also do file uploads
+			//Reading Json POST, Query, Header and Route providing models for a binder
+
+			options.ValueProviderFactories.Add(new JsonValueProviderFactory(jsonOptions));
+
+			options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
+			options.ValueProviderFactories.Add(new CookyValueProviderFactory());
+
+			options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
+			options.ValueProviderFactories.Add(new RouteValueProviderFactory());
+			options.ValueProviderFactories.Add(new FormFileValueProviderFactory());
+			options.ValueProviderFactories.Add(new FormValueProviderFactory());	
 
 			// Generic binder gettings complete de-serialized models of ModelProvider
 			options.ModelBinderProviders.Add(new GenericModelBinderProvider());

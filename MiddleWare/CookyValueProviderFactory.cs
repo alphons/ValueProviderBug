@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using System.Diagnostics;
+using System.Text;
 
 // JsonModelProviderFactory, JsonModelProvider
 // (C) 2022 Alphons van der Heijden
@@ -7,31 +7,28 @@ using System.Diagnostics;
 // Version: 1.0
 
 using System.Text.Json;
-
+using Heijden.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Alternative.DependencyInjection;
+namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
-public class FormGetModelProviderFactory : IValueProviderFactory
+public class CookyValueProviderFactory : IValueProviderFactory
 {
-
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
 	private static async Task AddValueProviderAsync(ValueProviderFactoryContext context, JsonSerializerOptions? options)
 	{
 		try
 		{
+			await Task.Yield();
+
 			var request = context.ActionContext.HttpContext.Request;
-			if (request.Method == "POST")
-			{
-				if (request.HasFormContentType)
-				{
-					var form = await request.ReadFormAsync();
-					
-					context.ValueProviders.Add(new GetModelProvider(BindingSource.Form, null, form, options));
-				}
-			}
+			var list = request.Cookies.Select(x => $"\"{x.Key}\": \"{x.Value}\"").ToArray();
+			var json = $"{{{string.Join(',', list)}}}";
+			var jsonDocument = JsonDocument.Parse(json, options: default);
+
+			context.ValueProviders.Add(new GenericValueProvider(BindingSource.Special, jsonDocument, null, options));
 		}
 		catch (Exception eee)
 		{
@@ -47,12 +44,12 @@ public class FormGetModelProviderFactory : IValueProviderFactory
 
 		return AddValueProviderAsync(context, this.jsonSerializerOptions);
 	}
-	public FormGetModelProviderFactory(JsonSerializerOptions Options) : base()
+	public CookyValueProviderFactory(JsonSerializerOptions Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
 
-	public FormGetModelProviderFactory()
+	public CookyValueProviderFactory()
 	{
 		this.jsonSerializerOptions = null;
 	}

@@ -1,5 +1,5 @@
 
-using Alternative.DependencyInjection;
+using Heijden.AspNetCore.Mvc.ModelBinding;
 
 var builder = WebApplication.CreateBuilder();
 

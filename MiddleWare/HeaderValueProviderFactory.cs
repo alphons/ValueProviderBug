@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Text;
 
 // JsonModelProviderFactory, JsonModelProvider
 // (C) 2022 Alphons van der Heijden
@@ -10,10 +9,12 @@ using System.Text.Json;
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Alternative.DependencyInjection;
+namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
-public class QueryGetModelProviderFactory : IValueProviderFactory
+
+
+public class HeaderValueProviderFactory : IValueProviderFactory
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 
@@ -24,11 +25,14 @@ public class QueryGetModelProviderFactory : IValueProviderFactory
 			await Task.Yield();
 
 			var request = context.ActionContext.HttpContext.Request;
-			var list = request.Query.Select(x => $"\"{x.Key}\": \"{x.Value}\"").ToArray();
-			var json = $"{{{string.Join(',', list)}}}";
+			var json = JsonSerializer.Serialize(request.Headers);
+
+			//var list = request.Headers.Select(x => $"\"{x.Key}\": \"{x.Value[0]}\"").ToArray();
+			//var json = $"{{{string.Join(',', list)}}}";
+
 			var jsonDocument = JsonDocument.Parse(json, options: default);
 
-			context.ValueProviders.Add(new GetModelProvider(BindingSource.Query, jsonDocument, null, options));
+			context.ValueProviders.Add(new GenericValueProvider(BindingSource.Header, jsonDocument, null, options));
 		}
 		catch (Exception eee)
 		{
@@ -44,12 +48,12 @@ public class QueryGetModelProviderFactory : IValueProviderFactory
 
 		return AddValueProviderAsync(context, this.jsonSerializerOptions);
 	}
-	public QueryGetModelProviderFactory(JsonSerializerOptions Options) : base()
+	public HeaderValueProviderFactory(JsonSerializerOptions Options) : base()
 	{
 		this.jsonSerializerOptions = Options;
 	}
 
-	public QueryGetModelProviderFactory()
+	public HeaderValueProviderFactory()
 	{
 		this.jsonSerializerOptions = null;
 	}

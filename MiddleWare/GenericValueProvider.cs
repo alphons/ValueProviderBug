@@ -11,17 +11,17 @@ using System.Text.Json;
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Alternative.DependencyInjection;
+namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
 #nullable enable
 
-public class GetModelProvider : BindingGetModelProvider
+public class GenericValueProvider : BindingSourceValueProvider
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 	private readonly JsonDocument? jsonDocument;
 	private readonly IFormCollection? form;
 
-	public GetModelProvider(BindingSource bindingSource, JsonDocument? jsonDocument, IFormCollection? form, JsonSerializerOptions? options) : base(bindingSource)
+	public GenericValueProvider(BindingSource bindingSource, JsonDocument? jsonDocument, IFormCollection? form, JsonSerializerOptions? options) : base(bindingSource)
 	{
 		this.jsonSerializerOptions = options;
 
@@ -45,6 +45,11 @@ public class GetModelProvider : BindingGetModelProvider
 		}
 
 		return false;
+	}
+
+	public override ValueProviderResult GetValue(string key)
+	{
+		return ValueProviderResult.None;
 	}
 
 	/// <summary>
