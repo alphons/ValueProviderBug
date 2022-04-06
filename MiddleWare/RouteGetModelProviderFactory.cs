@@ -26,7 +26,7 @@ public class RouteGetModelProviderFactory : IValueProviderFactory
 			var jsonString = JsonSerializer.Serialize(request.RouteValues);
 			var jsonDocument = JsonDocument.Parse(jsonString, options: default);
 
-			context.ValueProviders.Add(new GetModelProvider(BindingSource.Path, jsonDocument, options));
+			context.ValueProviders.Add(new GetModelProvider(BindingSource.Path, jsonDocument, null, options));
 		}
 		catch (Exception eee)
 		{

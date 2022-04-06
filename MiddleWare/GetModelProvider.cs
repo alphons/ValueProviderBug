@@ -1,4 +1,5 @@
 using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
 
 // JsonModelProviderFactory, JsonModelProvider
@@ -18,23 +19,32 @@ public class GetModelProvider : BindingGetModelProvider
 {
 	private readonly JsonSerializerOptions? jsonSerializerOptions;
 	private readonly JsonDocument? jsonDocument;
+	private readonly IFormCollection? form;
 
-	public GetModelProvider(BindingSource bindingSource, JsonDocument? jsonDocument, JsonSerializerOptions? options) : base(bindingSource)
+	public GetModelProvider(BindingSource bindingSource, JsonDocument? jsonDocument, IFormCollection? form, JsonSerializerOptions? options) : base(bindingSource)
 	{
 		this.jsonSerializerOptions = options;
 
 		this.jsonDocument = jsonDocument;
+
+		this.form = form;
 	}
 
 	public override bool ContainsPrefix(string prefix)
 	{
-		if (jsonDocument == null)
-			return false;
-
-		if (jsonDocument.RootElement.ValueKind == JsonValueKind.Object)
+		if (jsonDocument != null && jsonDocument.RootElement.ValueKind == JsonValueKind.Object)
 			return jsonDocument.RootElement.TryGetProperty(prefix, out _);
-		else
-			return false;
+
+		if (this.form != null)
+		{
+			if (this.form.ContainsKey(prefix))
+				return true;
+
+			if (this.form.Files != null)
+				return this.form.Files.Any(x => x.Name == prefix);
+		}
+
+		return false;
 	}
 
 	/// <summary>
@@ -60,6 +70,22 @@ public class GetModelProvider : BindingGetModelProvider
 					return first.Deserialize(t, jsonSerializerOptions);
 			}
 		}
+
+		if(this.form != null)
+		{
+			if (this.form.ContainsKey(key))
+			{
+				var model = TypeDescriptor.GetConverter(t).ConvertFrom(
+				   context: null,
+				   culture: System.Globalization.CultureInfo.InvariantCulture,
+				   value: this.form[key][0]); // Needs some tweaking
+				return model;
+			}
+
+			if (this.form.Files != null && t == typeof(IFormFile))
+				return this.form.Files.FirstOrDefault(x => x.Name == key);
+		}
+
 		return null;
 	}
 

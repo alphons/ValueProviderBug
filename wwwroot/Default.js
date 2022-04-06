@@ -236,9 +236,7 @@ function ProgressHandler(event)
 
 function StartUpload(e)
 {
-	var el = e.target;
-
-	var file = el.files[0];
+	var file = e.target.files[0];
 
 	$id("Result").innerText = 'Uploading';
 

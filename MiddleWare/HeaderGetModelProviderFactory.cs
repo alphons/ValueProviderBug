@@ -32,7 +32,7 @@ public class HeaderGetModelProviderFactory : IValueProviderFactory
 
 			var jsonDocument = JsonDocument.Parse(json, options: default);
 
-			context.ValueProviders.Add(new GetModelProvider(BindingSource.Header, jsonDocument, options));
+			context.ValueProviders.Add(new GetModelProvider(BindingSource.Header, jsonDocument, null, options));
 		}
 		catch (Exception eee)
 		{

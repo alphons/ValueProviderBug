@@ -245,7 +245,6 @@ namespace CoreBasic.Web.LogicControllers
 			{
 				using var ms = new MemoryStream();
 				await file.CopyToAsync(ms); // some dummy operation
-				System.Diagnostics.Debug.WriteLine("yes " + ms.Length);
 			}
 			return Ok(new 
 			{ 
