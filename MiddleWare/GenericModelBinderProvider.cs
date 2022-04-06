@@ -11,18 +11,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Heijden.AspNetCore.Mvc.ModelBinding;
 
-
-public interface IBindingGetModelProvider : IGetModelProvider
-{
-	IGetModelProvider? Filter(BindingSource bindingSource);
-}
-
-public interface IGetModelProvider : IValueProvider
-{
-	object? GetModel(string key, Type t);
-}
-
-
 /// <summary>
 /// An <see cref="IGetModelProvider"/> sufficient for most objects.
 /// </summary>
@@ -53,11 +41,11 @@ public class GenericModelBinder : IModelBinder
 			throw new ArgumentNullException(nameof(CompositeValueProvider));
 
 		var iBindingGetModelProviders = compositeValueProvider
-			.Where(x => x is IBindingGetModelProvider provider && (bindingContext.BindingSource == null || provider.Filter(bindingContext.BindingSource) != null))
-			.Select(x => x as IBindingGetModelProvider)
+			.Where(x => x is IBindingSourceValueProvider provider && (bindingContext.BindingSource == null || provider.Filter(bindingContext.BindingSource) != null))
+			.Select(x => x as IBindingSourceValueProvider)
 			.ToList();
 
-		if (iBindingGetModelProviders.FirstOrDefault(x => x != null && x.ContainsPrefix(defaultContext.OriginalModelName)) is not IGetModelProvider getModelProvider)
+		if (iBindingGetModelProviders.FirstOrDefault(x => x != null && x.ContainsPrefix(defaultContext.OriginalModelName)) is not IBindingSourceValueProvider getModelProvider)
 		{
 			Debug.WriteLine($"Bind failed on: {defaultContext.OriginalModelName}");
 			return Task.CompletedTask; // Failed
