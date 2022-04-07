@@ -56,7 +56,7 @@ public async Task<IActionResult> Index(List<string> list)
 }
 ```
 
-## Problem 2: Json posts can only be bind when using [FromBody] and can only be bind to one class model
+## Problem 2: Json posts can only be bind when using [FromBody]
 
 ### 2.1 Testing Single string
 
