@@ -493,14 +493,14 @@ Now this example can never work on the current .net core implementation but work
 (also multiple [FromBody])
 ```c#
 [HttpPost]
-[Route("~/api/ComplexTest/{SomeParameter2}")]
-public async Task<IActionResult> ComplexTest2(
-	[FromCooky(Name = ".AspNetCore.Session")] string SomeParameter0,
-	[FromHeader(Name = "Referer")] string SomeParameter1,
-	[FromRoute] string SomeParameter2,
-	[FromQuery] string SomeParameter3,
-	[FromBody] ApiModel SomeParameter4,
-	[FromBody] string SomeParameter5)
+[Route("~/api/DemoProposal/{SomeParameter2}")]
+public async Task<IActionResult> DemoProposal(
+	[FromCooky(Name = ".AspNetCore.Session")] string SomeParameter0, // #######
+	[FromHeader(Name = "Referer")] string SomeParameter1,	// "https://localhost:44346/"
+	[FromRoute] string SomeParameter2,			// "two"
+	[FromQuery] string SomeParameter3,			// "three"
+	[FromBody] ApiModel SomeParameter4,			//  Model having Array of Array of Array
+	[FromBody] string SomeParameter5)			//  "Yes you can" (double binding FromBody)
 {
 	await Task.Yield();
 	return Ok();

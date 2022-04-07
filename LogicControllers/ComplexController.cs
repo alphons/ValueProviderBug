@@ -235,8 +235,8 @@ namespace CoreBasic.Web.LogicControllers
 
 
 		[HttpPost]
-		[Route("~/api/ComplexTest2/{SomeParameter2}")]
-		public async Task<IActionResult> ComplexTest2(
+		[Route("~/api/DemoProposal/{SomeParameter2}")]
+		public async Task<IActionResult> DemoProposal(
 			[FromCooky(Name = ".AspNetCore.Session")] string SomeParameter0,
 			[FromHeader(Name = "Referer")] string SomeParameter1,
 			[FromRoute] string SomeParameter2,
