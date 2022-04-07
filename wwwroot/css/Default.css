@@ -183,3 +183,19 @@ tbody.t_Users td.p_Id
 	position: relative;
 	top: -14px;
 }
+
+#Result{
+	font-family:'Courier New';
+}
+
+div.error
+{
+	width:800px;
+	background-color:pink;
+}
+
+div.ok
+{
+	width: 800px;
+	background-color: lightgreen;
+}

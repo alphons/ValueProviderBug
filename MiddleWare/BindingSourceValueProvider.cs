@@ -53,7 +53,10 @@ public abstract class BindingSourceValueProvider : IBindingSourceValueProvider
 		}
 	}
 
-	public abstract object? GetModel(string key, Type t);
+	public virtual object? GetModel(string key, Type t)
+	{
+		return null;
+	}
 
 }
 

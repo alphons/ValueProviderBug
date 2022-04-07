@@ -32,6 +32,8 @@ public class GenericValueProvider : BindingSourceValueProvider
 
 	public override bool ContainsPrefix(string prefix)
 	{
+		Debug.WriteLine($"ContainsPrefix({prefix})");
+
 		if (jsonDocument != null && jsonDocument.RootElement.ValueKind == JsonValueKind.Object)
 			return jsonDocument.RootElement.TryGetProperty(prefix, out _);
 
@@ -60,6 +62,8 @@ public class GenericValueProvider : BindingSourceValueProvider
 	/// <returns>null or object model of type</returns>
 	public override object? GetModel(string key, Type t)
 	{
+		Debug.WriteLine($"GetModel({key})");
+
 		if (jsonDocument != null)
 		{
 			var prop = jsonDocument.RootElement.GetProperty(key);

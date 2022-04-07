@@ -6,6 +6,198 @@ namespace CoreBasic.Web.LogicControllers
 {
 	public class ComplexController : ControllerBase
 	{
+		[HttpGet]
+		[Route("~/api/index")]
+
+		// 1.0
+		public async Task<IActionResult> Index(List<string> list)
+		{
+			await Task.Yield();
+
+			// Using SomeValueProviderFactory
+			// Returned list "a", b", "b",  "c" <- repeat-bug
+			// Expected list "a", b", null, "c"
+
+			return Ok();
+		}
+
+		// 2.1
+
+		[HttpPost]
+		[Route("~/api/SimpleString1")]
+		public async Task<IActionResult> SimpleString1(string user)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				user
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/SimpleString2")]
+		public async Task<IActionResult> SimpleString2([FromBody] string user)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				user
+			});
+		}
+
+		public class ModelOfString
+		{
+			public string user { get; set; }
+		}
+
+		[HttpPost]
+		[Route("~/api/SimpleString3")]
+		public async Task<IActionResult> SimpleString3(ModelOfString model)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				model?.user
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/SimpleString4")]
+		public async Task<IActionResult> SimpleString4([FromBody] ModelOfString model)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				model?.user
+			});
+		}
+
+		// 2.2
+		[HttpPost]
+		[Route("~/api/ArrayOfStrings1")]
+		public async Task<IActionResult> ArrayOfStrings1(List<string> users)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				users
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/ArrayOfStrings2")]
+		public async Task<IActionResult> ArrayOfStrings2([FromBody] List<string> users)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				users
+			});
+		}
+
+		public class ModelArrayOfStrings
+		{
+			public List<string> users { get; set; }
+		}
+
+		[HttpPost]
+		[Route("~/api/ArrayOfStrings3")]
+		public async Task<IActionResult> ArrayOfStrings3(ModelArrayOfStrings model)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				model?.users
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/ArrayOfStrings4")]
+		public async Task<IActionResult> ArrayOfStrings4([FromBody] ModelArrayOfStrings model)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				model?.users
+			});
+		}
+
+		// 2.3
+
+		public class ModelArrayOfArrayOfStrings
+		{
+			public List<List<string>> users { get; set; }
+		}
+
+		[HttpPost]
+		[Route("~/api/ArrayOfArrayOfStrings1")]
+		public async Task<IActionResult> ArrayOfArrayOfStrings1(ModelArrayOfArrayOfStrings model)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				model?.users
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/ArrayOfArrayOfStrings2")]
+		public async Task<IActionResult> ArrayOfArrayOfStrings2([FromBody] ModelArrayOfArrayOfStrings model)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				model?.users
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/TwoParameters1")]
+		public async Task<IActionResult> TwoParameters1(string a, string b)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				a,
+				b
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/TwoParameters2")]
+		public async Task<IActionResult> TwoParameters2([FromBody] string a, string b)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				a,b
+			});
+		}
+
+		[HttpPost]
+		[Route("~/api/TwoParameters3")]
+		public async Task<IActionResult> TwoParameters3([FromBody] ModelOfString a, ModelOfString b)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				a = a.user,
+				b = b.user
+			});
+		}
+
+		// Solution 1, problem of the repeater bug
+
+		[HttpPost]
+		[Route("~/api/ListOfDoubles")]
+		public async Task<IActionResult> ListOfDoubles(List<double?> list)
+		{
+			await Task.Yield();
+			return Ok(new
+			{
+				list
+			});
+		}
 
 		public class ApiModel
 		{
@@ -20,10 +212,25 @@ namespace CoreBasic.Web.LogicControllers
 		[Route("~/api/HelloWorld")]
 		public async Task<IActionResult> HelloWorld()
 		{
+			// Forces a session cooky
 			HttpContext.Session.SetString("Hello", "World");
 			await HttpContext.Session.CommitAsync();
 
 			return Ok();
+		}
+
+		[HttpPost]
+		[Route("~/api/ComplexTest")]
+		public async Task<IActionResult> ComplexTest(
+			ApiModel SomeParameter4,
+			string SomeParameter5)
+		{
+			await Task.Yield();
+
+			return Ok(new
+			{
+
+			});
 		}
 
 

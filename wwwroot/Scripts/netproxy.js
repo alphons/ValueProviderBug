@@ -4,10 +4,8 @@
  * 
  *	@author     Alphons van der Heijden <alphons@heijden.com>
  *	@version    0.2.8 (last revision Apr, 2022)
- *	@copyright  (c) 2019-2021 Alphons van der Heijden
- *	@license    LGPL-3.0
- *	@alias      netproxy
- *	@class
+ *	@copyright  (c) 2019-2022 Alphons van der Heijden
+ *	@alias      netproxy, netproxyasync
  * 
  */
 
