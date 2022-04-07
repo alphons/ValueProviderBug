@@ -1,4 +1,4 @@
-# ASP.NET CORE MVC Parameter Binding Fundamentaly Flawwed
+# ASP.NET CORE MVC Parameter Binding Fundamentaly Flawed
 
 This project was started as a demonstration of problems as mentioned in https://github.com/dotnet/aspnetcore/issues/40929
 
