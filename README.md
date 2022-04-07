@@ -506,11 +506,8 @@ public async Task<IActionResult> DemoProposal(
 	return Ok();
 }
 ```
-**FunPart**
-For these custom valueproviders you can have a lot of influence on the translation path by adding JsonSerializerOptions  controlling the de-Serialization. 
-In this example, numbers can also be strings `JsonNumberHandling.AllowReadingFromString`
-But there are a lot of JsonSerializerOptions to tune. (DateTime, Currency translation etc.)
 
+End of proposal
 
 
 
