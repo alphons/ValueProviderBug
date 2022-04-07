@@ -353,17 +353,17 @@ having multiple hierarchical layers (array of array of array):
 
 ```javascript
 {
-	"SomeParameter4": // Now the beast has a name
-	{
-		Name: "My Name is",
-		"Users":
-			[
-				[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
-				[{ Name: "User10" }, { Name: "User11" }],
-				[{ Name: "User20" }, { Name: "User21" }]
-			]
-	},
-	"SomeParameter5": "Yes you can" // double binder
+  "SomeParameter4": // Now the beast has a name
+  {
+    Name: "My Name is",
+    "Users":
+    [
+      [{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
+      [{ Name: "User10" }, { Name: "User11" }],
+      [{ Name: "User20" }, { Name: "User21" }]
+    ]
+  },
+  "SomeParameter5": "Yes you can" // double binder
 }
 ```
 These calls are made to a ValueProvider:
@@ -419,11 +419,11 @@ You have no influence on this translation path.
 
 **In the end, its like a box of chocolates....... **
 
-# Proposal, adding GetModel to IBindingSourceValueProvider
+## Proposal, adding GetModel to IBindingSourceValueProvider
 
 I want to propose an additional method to the `IBindingSourceValueProvider` interface:  
 ```c#
-object? GetModel(string key, Type t)`
+object? GetModel(string key, Type t)
 ```
 The class which implements this interface `BindingSourceValueProvider` can have a virtual method:
 ```c#
@@ -454,38 +454,42 @@ To have some proof, the following setup is used:
 ```c#
 services.AddMvcCore().AddMvcOptions(options =>
 {
-	options.InputFormatters.Clear();
-	options.ValueProviderFactories.Clear();
-	options.ModelValidatorProviders.Clear();
-	options.Conventions.Clear();
-	options.Filters.Clear();
-	options.ModelMetadataDetailsProviders.Clear();
-	options.ModelValidatorProviders.Clear();
-	options.ModelMetadataDetailsProviders.Clear();
-	options.ModelBinderProviders.Clear();
-	options.OutputFormatters.Clear();
+  options.InputFormatters.Clear();
+  options.ValueProviderFactories.Clear();
+  options.ModelValidatorProviders.Clear();
+  options.Conventions.Clear();
+  options.Filters.Clear();
+  options.ModelMetadataDetailsProviders.Clear();
+  options.ModelValidatorProviders.Clear();
+  options.ModelMetadataDetailsProviders.Clear();
+  options.ModelBinderProviders.Clear();
+  options.OutputFormatters.Clear();
 
-	// Adding our new custom valueproviders (all implementing GetModel)
-	options.ValueProviderFactories.Add(new JsonValueProviderFactory());
-	options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
-	options.ValueProviderFactories.Add(new CookyValueProviderFactory());
+  // Adding our new custom valueproviders (all implementing GetModel)
+  options.ValueProviderFactories.Add(new JsonValueProviderFactory());
+  options.ValueProviderFactories.Add(new HeaderValueProviderFactory());
+  options.ValueProviderFactories.Add(new CookyValueProviderFactory());
 
-	options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
-	options.ValueProviderFactories.Add(new RouteValueProviderFactory());
-	options.ValueProviderFactories.Add(new FormFileValueProviderFactory());
-	options.ValueProviderFactories.Add(new FormValueProviderFactory());	
+  options.ValueProviderFactories.Add(new QueryStringValueProviderFactory());
+  options.ValueProviderFactories.Add(new RouteValueProviderFactory());
+  options.ValueProviderFactories.Add(new FormFileValueProviderFactory());
+  options.ValueProviderFactories.Add(new FormValueProviderFactory());	
 
-	// One Generic binder gettings complete de-serialized calling GetModel(name,type)
-	options.ModelBinderProviders.Add(new GenericModelBinderProvider());
+  // One Generic binder gettings complete de-serialized calling GetModel(name,type)
+  options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 }
 ```
-Same input data is used as 
+When using thesame input data, these calls are made to the new valueprovider implementing `GetModel`.
+```
+ContainsPrefix(SomeParameter4)
+ContainsPrefix(SomeParameter4)
+GetModel(SomeParameter4)
+ContainsPrefix(SomeParameter5)
+ContainsPrefix(SomeParameter5)
+GetModel(SomeParameter5)
+```
 
-**FunPart**
-For these custom valueproviders you can have a lot of influence on the translation path by adding JsonSerializerOptions  controlling the de-Serialization. In this example, numbers can also be strings `JsonNumberHandling.AllowReadingFromString`
-But there are a lot of JsonSerializerOptions to tune. (DateTime, Currency translation etc.)
-
-Now this example can never work on the current .net core implementation but works out-of-the-box on the new proposal.
+Now this example can never work on the current .net core implementation but works out-of-the-box using the new proposal.
 (also multiple [FromBody])
 ```c#
 [HttpPost]
@@ -502,15 +506,11 @@ public async Task<IActionResult> ComplexTest2(
 	return Ok();
 }
 ```
-Using the same input data, these are the calls made to the valueprovider:
-```
-ContainsPrefix(SomeParameter4)
-ContainsPrefix(SomeParameter4)
-GetModel(SomeParameter4)
-ContainsPrefix(SomeParameter5)
-ContainsPrefix(SomeParameter5)
-GetModel(SomeParameter5)
-```
+**FunPart**
+For these custom valueproviders you can have a lot of influence on the translation path by adding JsonSerializerOptions  controlling the de-Serialization. 
+In this example, numbers can also be strings `JsonNumberHandling.AllowReadingFromString`
+But there are a lot of JsonSerializerOptions to tune. (DateTime, Currency translation etc.)
+
 
 
 
