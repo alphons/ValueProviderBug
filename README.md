@@ -352,10 +352,11 @@ When looking at the process of value-provider and binder, for a more complex inp
 having multiple hierarchical layers (array of array of array):
 
 ```javascript
+r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three",
 {
   "SomeParameter4": // Now the beast has a name
   {
-    Name: "My Name is",
+    Name: "four",
     "Users":
     [
       [{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
@@ -363,8 +364,8 @@ having multiple hierarchical layers (array of array of array):
       [{ Name: "User20" }, { Name: "User21" }]
     ]
   },
-  "SomeParameter5": "Yes you can" // double binder
-}
+  "SomeParameter5": "five" // double binder
+});
 ```
 These calls are made to a ValueProvider:
 
@@ -489,8 +490,8 @@ ContainsPrefix(SomeParameter5)
 GetModel(SomeParameter5)
 ```
 
-Now this example can never work on the current .net core implementation but works out-of-the-box using the new proposal.
-(also multiple [FromBody])
+Now this example works out-of-the-box using the new proposal.
+Special attention tot the multiple [FromBody].
 ```c#
 [HttpPost]
 [Route("~/api/DemoProposal/{SomeParameter2}")]
@@ -499,8 +500,8 @@ public async Task<IActionResult> DemoProposal(
 	[FromHeader(Name = "Referer")] string SomeParameter1,	// "https://localhost:44346/"
 	[FromRoute] string SomeParameter2,			// "two"
 	[FromQuery] string SomeParameter3,			// "three"
-	[FromBody] ApiModel SomeParameter4,			//  Model having Array of Array of Array
-	[FromBody] string SomeParameter5)			//  "Yes you can" (double binding FromBody)
+	[FromBody] ApiModel SomeParameter4,			//  {four}
+	[FromBody] string SomeParameter5)			//  "five" (double binding FromBody)
 {
 	await Task.Yield();
 	return Ok();

@@ -206,6 +206,22 @@ async function UnitTest()
 	C("ComplexArrayArrayClass", "r.GroupInfo.Users[0][0].Alias[1]== 'aliasb'");
 	C("ComplexArrayArrayClass", "r.GroupInfo.Users[0][0].Alias[2]== 'aliasc'");
 
+
+	r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three",
+		{
+			"SomeParameter4": // Now the beast has a name
+			{
+				Name: "four",
+				"Users":
+					[
+						[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
+						[{ Name: "User10" }, { Name: "User11" }],
+						[{ Name: "User20" }, { Name: "User21" }]
+					]
+			},
+			"SomeParameter5": "five" // double binder
+		});
+
 	// Checking, run till end
 	C("ready", "true == false");
 }
