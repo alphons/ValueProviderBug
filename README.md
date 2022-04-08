@@ -325,9 +325,7 @@ Results also in the repeat bug: 1.2, 3.4, 5.6, **5.6**, 7.8
 
 ## Solution 1 Conclusion, current achitecture is flawed and error prone
 
-Only the array elements prior to the null element are binded to the parameter of the controller method.
-And that can NOT be fixed because of the nature of the current binding. So it is not a problem of the
-CollectionModelBinder, but it is a general problem of the current valueproviding en modelbinding.
+It is a general problem of the current valueproviding en modelbinding.
 I hate to say this, but **this is rotten to the core**!
 
 ## Some lesson in valueproviding and modelbinding
@@ -345,7 +343,7 @@ implement the `IValueProvider` interface, which has 2 methods, `bool ContainsPre
 `ValueProviderResult GetValue(string key)`. And thats the place where it gets a bit smelly. The `ValueProviderResult`
 is some kind of wrapper arround an array of strings, thats it.
 
-So a fundamental architectual error is made her. The valueprovider does the first part of the deserialization of the data, 
+So a fundamental architectual error is made here. The valueprovider does the first part of the deserialization of the data, 
 and the binder (or set of nested binders if you like), are doing the second part of deserialization (?!)
 
 When looking at the process of value-provider and binder, for a more complex input data structure for example
@@ -437,7 +435,7 @@ public virtual object? GetModel(string key, Type t)
 And there is a huge advantage. The translation between input values and the model it has to provide can be done INSIDE the ValueProvider. Thas the place where it belongs, not in the binder.
 
 The binder for such a model can ben very simple.
-A controller only calls the valueprovider method `ContainsPrefix` twice and calls `GetModel` once per parameter regardless of the complexicty of the input data.
+A controller only calls the valueprovider method `ContainsPrefix` twice and calls `GetModel` once per parameter regardless of the complexity of the input data.
 The core of the new generic ModelBinder is following code:
 ```c#
 try
@@ -451,7 +449,7 @@ try
 ```
 **Example**
 
-To have some proof, the following setup is used:
+To have some proof of concept, the following setup is used:
 ```c#
 services.AddMvcCore().AddMvcOptions(options =>
 {
