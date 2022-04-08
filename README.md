@@ -436,9 +436,9 @@ public virtual object? GetModel(string key, Type t)
 
 And there is a huge advantage. The translation between input values and the model it has to provide can be done INSIDE the ValueProvider. Thas the place where it belongs, not in the binder.
 
-The binder for such a model can ben very simple. It does call the `ContainsPrefix` on every parameter, but does NOT NEED recursively calls, no additional requests are made, even when the model itself is complex and had some 'depth' in it.
-For example when a controller has a method having 4 parameters, the binder is called only 4 times independently of its complex model structure per parameter.
-The core of the new ModelBinder is following code:
+The binder for such a model can ben very simple.
+A controller only calls the valueprovider method `ContainsPrefix` twice and calls `GetModel` once per parameter regardless of the complexicty of the input data.
+The core of the new generic ModelBinder is following code:
 ```c#
 try
 {
@@ -480,7 +480,7 @@ services.AddMvcCore().AddMvcOptions(options =>
   options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 }
 ```
-When using thesame input data, these calls are made to the new valueprovider implementing `GetModel`.
+When using the same input data, these calls are made to the new valueprovider implementing `GetModel`.
 ```
 ContainsPrefix(SomeParameter4)
 ContainsPrefix(SomeParameter4)
@@ -491,7 +491,7 @@ GetModel(SomeParameter5)
 ```
 
 Now this example works out-of-the-box using the new proposal.
-Special attention tot the multiple [FromBody].
+Special attention to the huge gain of aving multiple [FromBody] parameters.
 ```c#
 [HttpPost]
 [Route("~/api/DemoProposal/{SomeParameter2}")]
