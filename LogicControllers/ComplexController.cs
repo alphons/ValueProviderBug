@@ -253,6 +253,24 @@ namespace CoreBasic.Web.LogicControllers
 			});
 		}
 
+		[HttpPost]
+		[Route("~/api/DemoProposal2/{SomeParameter2}")]
+		public async Task<IActionResult> DemoProposal(
+			string Referer,
+			string SomeParameter2,
+			string SomeParameter3,
+			ApiModel SomeParameter4,
+			string SomeParameter5,
+			string SomeParameter6)
+		{
+			await Task.Yield();
+
+			return Ok(new
+			{
+
+			});
+		}
+
 
 		[HttpPost]
 		[Route("~/api/ComplexString")]

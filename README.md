@@ -501,14 +501,29 @@ public async Task<IActionResult> DemoProposal(
 	[FromRoute] string SomeParameter2,			// "two"
 	[FromQuery] string SomeParameter3,			// "three"
 	[FromBody] ApiModel SomeParameter4,			//  {four}
-	[FromBody] string SomeParameter5)			//  "five" (multi binding FromBody)
-	[FromQuery]string SomeParameter6)			//  "six" (multi binding FromQuery )
+	[FromBody] string SomeParameter5,			//  "five" (multi binding FromBody)
+	[FromQuery]string SomeParameter6)			//  "six" (multi binding FromQuery)
 {
 	await Task.Yield();
 	return Ok();
 }
 ```
-
+And if parameter names are unique this can be simplified to:
+```c#
+[HttpPost]
+[Route("~/api/DemoProposal2/{SomeParameter2}")]
+public async Task<IActionResult> DemoProposal(
+	string Referer,			// "https://localhost:44346/"
+	string SomeParameter2,		// "two"
+	string SomeParameter3,		// "three"
+	ApiModel SomeParameter4,	//  {four}
+	string SomeParameter5,		//  "five" (multi binding FromBody)
+	string SomeParameter6)		//  "six" (multi binding FromQuery)
+{
+	await Task.Yield();
+	return Ok();
+}
+```
 End of proposal
 
 

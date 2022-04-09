@@ -222,6 +222,21 @@ async function UnitTest()
 			"SomeParameter5": "five" // double binder
 		});
 
+	r = await netproxyasync("./api/DemoProposal2/two?SomeParameter3=three&SomeParameter6=six",
+		{
+			"SomeParameter4": // Now the beast has a name
+			{
+				Name: "four",
+				"Users":
+					[
+						[{ Name: "User00", Alias: ['aliasa', 'aliasb', 'aliasc'] }, { Name: "User01" }],
+						[{ Name: "User10" }, { Name: "User11" }],
+						[{ Name: "User20" }, { Name: "User21" }]
+					]
+			},
+			"SomeParameter5": "five" // double binder
+		});
+
 	// Checking, run till end
 	C("ready", "true == false");
 }
