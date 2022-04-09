@@ -242,7 +242,8 @@ namespace CoreBasic.Web.LogicControllers
 			[FromRoute] string SomeParameter2,
 			[FromQuery] string SomeParameter3,
 			[FromBody] ApiModel SomeParameter4,
-			[FromBody] string SomeParameter5)
+			[FromBody] string SomeParameter5,
+			[FromQuery]string SomeParameter6)
 		{
 			await Task.Yield();
 

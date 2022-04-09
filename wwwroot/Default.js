@@ -207,7 +207,7 @@ async function UnitTest()
 	C("ComplexArrayArrayClass", "r.GroupInfo.Users[0][0].Alias[2]== 'aliasc'");
 
 
-	r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three",
+	r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three&SomeParameter6=six",
 		{
 			"SomeParameter4": // Now the beast has a name
 			{

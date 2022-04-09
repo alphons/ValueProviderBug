@@ -350,7 +350,7 @@ When looking at the process of value-provider and binder, for a more complex inp
 having multiple hierarchical layers (array of array of array):
 
 ```javascript
-r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three",
+r = await netproxyasync("./api/DemoProposal/two?SomeParameter3=three&SomeParameter6=six",
 {
   "SomeParameter4": // Now the beast has a name
   {
@@ -491,7 +491,7 @@ GetModel(SomeParameter5)
 ```
 
 Now this example works out-of-the-box using the new proposal.
-Special attention to the huge gain of having multiple [FromBody] parameters.
+Special attention to the huge gain of having multiple binding attributes.
 ```c#
 [HttpPost]
 [Route("~/api/DemoProposal/{SomeParameter2}")]
@@ -501,7 +501,8 @@ public async Task<IActionResult> DemoProposal(
 	[FromRoute] string SomeParameter2,			// "two"
 	[FromQuery] string SomeParameter3,			// "three"
 	[FromBody] ApiModel SomeParameter4,			//  {four}
-	[FromBody] string SomeParameter5)			//  "five" (double binding FromBody)
+	[FromBody] string SomeParameter5)			//  "five" (multi binding FromBody)
+	[FromQuery]string SomeParameter6)			//  "six" (multi binding FromQuery )
 {
 	await Task.Yield();
 	return Ok();
