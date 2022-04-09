@@ -326,7 +326,7 @@ Results also in the repeat bug: 1.2, 3.4, 5.6, **5.6**, 7.8
 ## Solution 1 Conclusion, current achitecture is flawed and error prone
 
 It is a general problem of the current valueproviding en modelbinding.
-I hate to say this, but **this is rotten to the core**!
+Hate to say this, but **this is rotten to the core**!
 
 ## Some lesson in valueproviding and modelbinding
 
@@ -420,21 +420,21 @@ You have no influence on this translation path.
 
 ## Proposal, adding GetModel to IBindingSourceValueProvider
 
-I want to propose an additional method to the `IBindingSourceValueProvider` interface:  
+This proposal is about an additional method to the `IBindingSourceValueProvider` interface:  
 ```c#
 object? GetModel(string key, Type t)
 ```
-The class which implements this interface `BindingSourceValueProvider` can have a virtual method:
+The class which implements this interface `BindingSourceValueProvider` can have a default virtual method:
 ```c#
 public virtual object? GetModel(string key, Type t)
 {
 	return null;
 }
 ```
-
+This change does not break any current code.
 And there is a huge advantage. The translation between input values and the model it has to provide can be done INSIDE the ValueProvider. Thas the place where it belongs, not in the binder.
 
-The binder for such a model can ben very simple.
+A generic binder for such models can be very simple.
 A controller only calls the valueprovider method `ContainsPrefix` twice and calls `GetModel` once per parameter regardless of the complexity of the input data.
 The core of the new generic ModelBinder is following code:
 ```c#
@@ -453,6 +453,7 @@ To have some proof of concept, the following setup is used:
 ```c#
 services.AddMvcCore().AddMvcOptions(options =>
 {
+  // Clear out all legacy stuff
   options.InputFormatters.Clear();
   options.ValueProviderFactories.Clear();
   options.ModelValidatorProviders.Clear();
@@ -474,7 +475,8 @@ services.AddMvcCore().AddMvcOptions(options =>
   options.ValueProviderFactories.Add(new FormFileValueProviderFactory());
   options.ValueProviderFactories.Add(new FormValueProviderFactory());	
 
-  // One Generic binder gettings complete de-serialized calling GetModel(name,type)
+  // One Generic binder getting complete de-serialized parameters
+  // calling GetModel(name,type) on the new value-providers.
   options.ModelBinderProviders.Add(new GenericModelBinderProvider());
 }
 ```
@@ -489,7 +491,7 @@ GetModel(SomeParameter5)
 ```
 
 Now this example works out-of-the-box using the new proposal.
-Special attention to the huge gain of aving multiple [FromBody] parameters.
+Special attention to the huge gain of having multiple [FromBody] parameters.
 ```c#
 [HttpPost]
 [Route("~/api/DemoProposal/{SomeParameter2}")]
