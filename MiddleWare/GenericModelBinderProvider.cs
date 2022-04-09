@@ -41,11 +41,14 @@ public class GenericModelBinder : IModelBinder
 			throw new ArgumentNullException(nameof(CompositeValueProvider));
 
 		var iBindingGetModelProviders = compositeValueProvider
-			.Where(x => x is IBindingSourceValueProvider provider && (bindingContext.BindingSource == null || provider.Filter(bindingContext.BindingSource) != null))
+			.Where(x => x is IBindingSourceValueProvider provider && 
+			(bindingContext.BindingSource == null || 
+			provider.Filter(bindingContext.BindingSource) != null))
 			.Select(x => x as IBindingSourceValueProvider)
 			.ToList();
 
-		if (iBindingGetModelProviders.FirstOrDefault(x => x != null && x.ContainsPrefix(defaultContext.OriginalModelName)) is not IBindingSourceValueProvider getModelProvider)
+		if (iBindingGetModelProviders.FirstOrDefault(x => x != null && 
+		x.ContainsPrefix(defaultContext.OriginalModelName)) is not IBindingSourceValueProvider getModelProvider)
 		{
 			Debug.WriteLine($"Bind failed on: {defaultContext.OriginalModelName}");
 			return Task.CompletedTask; // Failed
