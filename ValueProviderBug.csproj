@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mvc.ModelBinding.MultiParameter" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
