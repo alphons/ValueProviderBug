@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mvc.ModelBinding.MultiParameter" Version="1.0.0" />
+    <PackageReference Include="Mvc.ModelBinding.MultiParameter" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
