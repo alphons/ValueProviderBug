@@ -2,7 +2,8 @@
 
 This project was started as a demonstration of problems as mentioned in https://github.com/dotnet/aspnetcore/issues/40929
 
-This project uses the resulting nuget package [Mvc.ModelBinding.MultiParameter](https://www.nuget.org/packages/Mvc.ModelBinding.MultiParameter/)
+This project uses the nuget package [Mvc.ModelBinding.MultiParameter](https://www.nuget.org/packages/Mvc.ModelBinding.MultiParameter/)
+as a result of debugging and solving the problem.
 
 ## Problem 1: CollectionModelBinderProvider/SimpleTypeModelBinderProvider have null repeat bug
 
